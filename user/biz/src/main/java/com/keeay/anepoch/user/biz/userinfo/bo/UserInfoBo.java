@@ -1,5 +1,6 @@
 package com.keeay.anepoch.user.biz.userinfo.bo;
 
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -10,11 +11,12 @@ import java.io.Serializable;
  * @date 2019/4
  */
 @Data
-public class UserInfoBo implements Serializable {
+public class UserInfoBo extends CommonPage implements Serializable {
 	/** 主键id */
 	private Long id;
 	/** 组织编码 */
 	private String organizationCode;
+	private String organizationCodeLike;
 	/** 用户编码 */
 	private String userCode;
 	/** 登录名 */

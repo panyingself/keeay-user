@@ -1,9 +1,11 @@
 
 package com.keeay.anepoch.user.biz.userinfo;
 
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.base.commons.utils.ConditionUtils;
 import com.keeay.anepoch.user.service.model.*;
 import com.keeay.anepoch.user.biz.userinfo.bo.*;
+import com.keeay.anepoch.user.service.model.query.UserInfoQuery;
 import com.keeay.anepoch.user.service.service.userinfo.UserInfoService;
 import com.keeay.anepoch.user.biz.userinfo.converter.UserInfoBoConverter;
 import com.keeay.anepoch.base.commons.monitor.BaseBizTemplate;
@@ -137,6 +139,29 @@ public class UserInfoBizImpl implements UserInfoBiz {
                     return null;
                 }
                 return JsonMoreUtils.toBean(JsonMoreUtils.toJson(fromDb), UserInfoBo.class);
+            }
+        }.execute();
+    }
+
+    /**
+     * 分页查询列表
+     *
+     * @param pageQueryBo pageQueryBo
+     * @return page list
+     */
+    @Override
+    public CommonPage<UserInfoBo> pageList(UserInfoBo pageQueryBo) {
+        return new BaseBizTemplate<CommonPage<UserInfoBo>>() {
+            @Override
+            protected CommonPage<UserInfoBo> process() {
+                UserInfoQuery userInfoQuery = JsonMoreUtils.toBean(JsonMoreUtils.toJson(pageQueryBo), UserInfoQuery.class);
+                CommonPage<UserInfo> pageResult = userInfoService.pageList(userInfoQuery, pageQueryBo.getCurrentPage().intValue(), pageQueryBo.getPageSize().intValue());
+                List<UserInfo> dataList = pageResult.getDataList();
+                if (CollectionUtils.isEmpty(dataList)) {
+                    new CommonPage<>(pageResult.getCurrentPage(), pageResult.getPageSize(), pageResult.getTotalCount(), Lists.newArrayList());
+                }
+                List<UserInfoBo> list = JsonMoreUtils.ofList(JsonMoreUtils.toJson(dataList), UserInfoBo.class);
+                return new CommonPage<>(pageResult.getCurrentPage(), pageResult.getPageSize(), pageResult.getTotalCount(), list);
             }
         }.execute();
     }

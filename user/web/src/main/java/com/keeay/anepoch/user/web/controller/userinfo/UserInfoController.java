@@ -1,6 +1,7 @@
 
 package com.keeay.anepoch.user.web.controller.userinfo;
 
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.user.biz.userinfo.UserInfoBiz;
 import com.keeay.anepoch.user.biz.userinfo.bo.UserInfoBo;
 import com.keeay.anepoch.user.web.controller.userinfo.request.*;
@@ -92,6 +93,22 @@ public class UserInfoController {
             return null;
         }
         return JsonMoreUtils.toBean(JsonMoreUtils.toJson(result), UserInfoDetailResponse.class);
+    }
+
+
+    /**
+     * 分页查询列表
+     */
+    @GetMapping("pageList")
+    public CommonPage<UserInfoListResponse> pageList(UserInfoPageQueryRequest userInfoPageQueryRequest) {
+        UserInfoBo userBo = JsonMoreUtils.toBean(JsonMoreUtils.toJson(userInfoPageQueryRequest), UserInfoBo.class);
+        CommonPage<UserInfoBo> pageResult = userInfoBiz.pageList(userBo);
+        List<UserInfoBo> dataList = pageResult.getDataList();
+        if (CollectionUtils.isEmpty(dataList)) {
+            return new CommonPage<>(pageResult.getCurrentPage(), pageResult.getPageSize(), pageResult.getTotalCount(), Lists.newArrayList());
+        }
+        List<UserInfoListResponse> responseList = JsonMoreUtils.ofList(JsonMoreUtils.toJson(dataList), UserInfoListResponse.class);
+        return new CommonPage<>(pageResult.getCurrentPage(), pageResult.getPageSize(), pageResult.getTotalCount(), responseList);
     }
 }
 
