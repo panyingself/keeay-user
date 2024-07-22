@@ -1,6 +1,8 @@
 
 package com.keeay.anepoch.user.web.controller.menuinfo;
 
+import com.keeay.anepoch.auth.api.context.LoginUser;
+import com.keeay.anepoch.auth.api.context.UserContext;
 import com.keeay.anepoch.base.commons.utils.JsonMoreUtils;
 import com.keeay.anepoch.user.biz.menuinfo.MenuInfoBiz;
 import com.keeay.anepoch.user.biz.menuinfo.bo.MenuInfoBo;
@@ -48,8 +50,9 @@ public class MenuInfoController {
     }
 
     @GetMapping("getUserTreeList")
-    public List<MenuInfoListResponse> getUserTreeList(String userCode) {
-        List<MenuInfoBo> resultList = menuInfoBiz.getUserTreeList(userCode);
+    public List<MenuInfoListResponse> getUserTreeList() {
+        LoginUser loginUser = UserContext.getUser();
+        List<MenuInfoBo> resultList = menuInfoBiz.getUserTreeList(loginUser.getUserCode());
         if (CollectionUtils.isEmpty(resultList)) {
             return Lists.newArrayListWithCapacity(0);
         }

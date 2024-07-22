@@ -1,9 +1,13 @@
 
 package com.keeay.anepoch.user.biz.roleinfo;
 
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.base.commons.utils.ConditionUtils;
+import com.keeay.anepoch.user.biz.userinfo.bo.UserInfoBo;
 import com.keeay.anepoch.user.service.model.*;
 import com.keeay.anepoch.user.biz.roleinfo.bo.*;
+import com.keeay.anepoch.user.service.model.query.RoleInfoQuery;
+import com.keeay.anepoch.user.service.model.query.UserInfoQuery;
 import com.keeay.anepoch.user.service.service.roleinfo.RoleInfoService;
 import com.keeay.anepoch.user.biz.roleinfo.converter.RoleInfoBoConverter;
 import com.keeay.anepoch.base.commons.monitor.BaseBizTemplate;
@@ -105,6 +109,29 @@ public class RoleInfoBizImpl implements RoleInfoBiz {
                     return Lists.newArrayList();
                 }
                 return JsonMoreUtils.ofList(JsonMoreUtils.toJson(fromDbList), RoleInfoBo.class);
+            }
+        }.execute();
+    }
+
+    /**
+     * 查询record集合
+     *
+     * @param queryRoleInfoBo queryRoleInfoBo
+     * @return record list
+     */
+    @Override
+    public CommonPage<RoleInfoBo> pageList(RoleInfoBo queryRoleInfoBo) {
+        return new BaseBizTemplate<CommonPage<RoleInfoBo>>() {
+            @Override
+            protected CommonPage<RoleInfoBo> process() {
+                RoleInfoQuery roleInfoQuery = JsonMoreUtils.toBean(JsonMoreUtils.toJson(queryRoleInfoBo), RoleInfoQuery.class);
+                CommonPage<RoleInfo> pageResult = roleInfoService.pageList(roleInfoQuery, queryRoleInfoBo.getCurrentPage().intValue(), queryRoleInfoBo.getPageSize().intValue());
+                List<RoleInfo> dataList = pageResult.getDataList();
+                if (CollectionUtils.isEmpty(dataList)) {
+                    new CommonPage<>(pageResult.getCurrentPage(), pageResult.getPageSize(), pageResult.getTotalCount(), Lists.newArrayList());
+                }
+                List<RoleInfoBo> list = JsonMoreUtils.ofList(JsonMoreUtils.toJson(dataList), RoleInfoBo.class);
+                return new CommonPage<>(pageResult.getCurrentPage(), pageResult.getPageSize(), pageResult.getTotalCount(), list);
             }
         }.execute();
     }

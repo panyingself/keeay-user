@@ -17,6 +17,8 @@ public class UserInfoBo extends CommonPage implements Serializable {
 	/** 组织编码 */
 	private String organizationCode;
 	private String organizationCodeLike;
+	private String userNameKeyword;
+	private String phoneKeyword;
 	/** 用户编码 */
 	private String userCode;
 	/** 登录名 */

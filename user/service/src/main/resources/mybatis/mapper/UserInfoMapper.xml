@@ -288,6 +288,12 @@
 		<if test="organizationCodeLike!=null">
 			AND organization_code LIKE CONCAT(#{organizationCodeLike},'%')
 		</if>
+		<if test="userNameKeyword!=null">
+			AND user_name LIKE CONCAT('%',#{userNameKeyword},'%')
+		</if>
+		<if test="phoneKeyword!=null">
+			AND phone LIKE CONCAT('%',#{phoneKeyword},'%')
+		</if>
 	</select>
 
 	<!--该方法适用于，获取的数据条数小于等于1 如有特殊需要自己实现-->

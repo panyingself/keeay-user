@@ -1,4 +1,4 @@
-package com.keeay.anepoch.user.web.controller.userinfo.request;
+package com.keeay.anepoch.user.web.controller.roleinfo.request;
 
 import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import lombok.Data;
@@ -10,32 +10,14 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @date 2019/4
  */
 @Data
-public class UserInfoPageQueryRequest extends CommonPage {
+public class RoleInfoPageQueryRequest extends CommonPage {
     private Long id;
 
-    private String organizationCodeLike;
+    private String roleCode;
 
-    private String userNameKeyword;
-
-    private String phoneKeyword;
-
-    private String userCode;
-
-    private String loginName;
-
-    private String loginPwd;
-
-    private String userName;
-
-    private String phone;
-
-    private String email;
-
-    private Boolean gender;
+    private String roleName;
 
     private String remark;
-
-    private Boolean activeStatus;
 
     private String createUser;
 

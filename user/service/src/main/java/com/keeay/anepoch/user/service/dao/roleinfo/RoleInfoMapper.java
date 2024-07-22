@@ -2,7 +2,11 @@ package com.keeay.anepoch.user.service.dao.roleinfo;
 
 import com.keeay.anepoch.user.service.model.*;
 import com.keeay.anepoch.user.service.dao.BaseMapper;
+import com.keeay.anepoch.user.service.model.query.RoleInfoQuery;
+import com.keeay.anepoch.user.service.model.query.UserInfoQuery;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author py
@@ -10,4 +14,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RoleInfoMapper extends BaseMapper<RoleInfo>{
+    /**
+     * 分页查询
+     * @param roleInfoQuery roleInfoQuery
+     * @return data list
+     */
+    List<RoleInfo> pageList(RoleInfoQuery roleInfoQuery);
 }

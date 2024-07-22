@@ -31,13 +31,13 @@
 			<if test="id!=null">
 				AND id = #{id}
 			</if>
-			<if test="code!=null">
+			<if test="code!=null and name != ''">
 				AND code = #{code}
 			</if>
 			<if test="parentCode!=null">
 				AND parent_code = #{parentCode}
 			</if>
-			<if test="name!=null">
+			<if test="name!=null and name != ''">
 				AND name = #{name}
 			</if>
 			<if test="showOrder!=null">

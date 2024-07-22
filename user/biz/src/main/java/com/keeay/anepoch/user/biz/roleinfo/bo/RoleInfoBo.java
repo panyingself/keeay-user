@@ -1,5 +1,6 @@
 package com.keeay.anepoch.user.biz.roleinfo.bo;
 
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -10,7 +11,7 @@ import java.io.Serializable;
  * @date 2019/4
  */
 @Data
-public class RoleInfoBo implements Serializable {
+public class RoleInfoBo extends CommonPage implements Serializable {
 	/** 主键id */
 	private Long id;
 	/** 角色code */

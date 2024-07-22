@@ -1,6 +1,7 @@
 
 package com.keeay.anepoch.user.biz.roleinfo;
 
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.user.biz.roleinfo.bo.*;
 import java.util.List;
 
@@ -31,6 +32,13 @@ public interface RoleInfoBiz {
 	 * @return record list
 	 */
 	List<RoleInfoBo> list(RoleInfoBo queryRoleInfoBo);
+
+	/**
+	 * 查询record集合
+	 * @param queryRoleInfoBo queryRoleInfoBo
+	 * @return record list
+	 */
+	CommonPage<RoleInfoBo> pageList(RoleInfoBo queryRoleInfoBo);
 
 	/**
 	 * 查询record detail

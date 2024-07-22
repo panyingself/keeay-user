@@ -3,6 +3,7 @@ package com.keeay.anepoch.user.biz.userinfo;
 
 import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.base.commons.utils.ConditionUtils;
+import com.keeay.anepoch.user.biz.userinfo.helper.UserInfoHelper;
 import com.keeay.anepoch.user.service.model.*;
 import com.keeay.anepoch.user.biz.userinfo.bo.*;
 import com.keeay.anepoch.user.service.model.query.UserInfoQuery;
@@ -57,6 +58,10 @@ public class UserInfoBizImpl implements UserInfoBiz {
                 if (StringUtils.isNotBlank(newUserInfo.getLoginPwd())) {
                     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                     newUserInfo.setLoginPwd(passwordEncoder.encode(newUserInfo.getLoginPwd()));
+                }
+                //生成userCode
+                if(StringUtils.isBlank(newUserInfo.getUserCode())){
+                    newUserInfo.setUserCode(UserInfoHelper.genUserCode());
                 }
                 userInfoService.insert(newUserInfo);
                 return true;

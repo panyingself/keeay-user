@@ -1,21 +1,21 @@
 package com.keeay.anepoch.user.service.model.query;
 
-import com.keeay.anepoch.user.service.model.UserInfo;
+import com.keeay.anepoch.user.service.model.RoleInfo;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.io.Serializable;
 
 /**
  * Description:
  *
  * @author -  pany
- * Time - 2024/7/18 - 17:15
+ * Time - 2024/7/22 - 15:30
  */
 @Data
-public class UserInfoQuery extends UserInfo {
-    private String organizationCodeLike;
-    private String userNameKeyword;
-    private String phoneKeyword;
+public class RoleInfoQuery extends RoleInfo implements Serializable {
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);

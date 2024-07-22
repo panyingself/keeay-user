@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -108,7 +109,8 @@ public class MenuInfoBizImpl implements MenuInfoBiz {
                     return Lists.newArrayList();
                 }
                 //树化返回
-                return getTreeList(fromDbList);
+                List<MenuInfo> sortedList = fromDbList.stream().sorted(Comparator.comparing(MenuInfo::getSort)).collect(Collectors.toList());
+                return getTreeList(sortedList);
             }
         }.execute();
     }

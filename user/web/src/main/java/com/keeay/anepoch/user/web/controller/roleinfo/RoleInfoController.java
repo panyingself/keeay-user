@@ -1,12 +1,15 @@
 
 package com.keeay.anepoch.user.web.controller.roleinfo;
 
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.user.biz.roleinfo.RoleInfoBiz;
 import com.keeay.anepoch.user.biz.roleinfo.bo.RoleInfoBo;
+import com.keeay.anepoch.user.biz.userinfo.bo.UserInfoBo;
 import com.keeay.anepoch.user.web.controller.roleinfo.request.*;
 import com.keeay.anepoch.user.web.controller.roleinfo.response.*;
 import com.keeay.anepoch.base.commons.utils.JsonMoreUtils;
 import com.google.common.collect.Lists;
+import com.keeay.anepoch.user.web.controller.userinfo.response.UserInfoListResponse;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,6 +65,24 @@ public class RoleInfoController {
             return Lists.newArrayListWithCapacity(0);
         }
         return JsonMoreUtils.ofList(JsonMoreUtils.toJson(resultList), RoleInfoListResponse.class);
+    }
+
+    /**
+     * 记录列表
+     *
+     * @param roleInfoPageQueryRequest roleInfoPageQueryRequest
+     * @return list
+     */
+    @PostMapping("pageList")
+    public CommonPage<RoleInfoListResponse> pageList(@RequestBody RoleInfoPageQueryRequest roleInfoPageQueryRequest) {
+        RoleInfoBo queryRoleInfoBo = JsonMoreUtils.toBean(JsonMoreUtils.toJson(roleInfoPageQueryRequest), RoleInfoBo.class);
+        CommonPage<RoleInfoBo> resultList = roleInfoBiz.pageList(queryRoleInfoBo);
+        List<RoleInfoBo> dataList = resultList.getDataList();
+        if (CollectionUtils.isEmpty(dataList)) {
+            return new CommonPage<>(roleInfoPageQueryRequest.getCurrentPage(), roleInfoPageQueryRequest.getPageSize(), 0L, Lists.newArrayList());
+        }
+        List<RoleInfoListResponse> responseList = JsonMoreUtils.ofList(JsonMoreUtils.toJson(dataList), RoleInfoListResponse.class);
+        return new CommonPage<>(resultList.getCurrentPage(), resultList.getPageSize(), resultList.getTotalCount(), responseList);
     }
 
     /**
