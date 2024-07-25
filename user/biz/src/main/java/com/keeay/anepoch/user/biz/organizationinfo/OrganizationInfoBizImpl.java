@@ -134,6 +134,7 @@ public class OrganizationInfoBizImpl implements OrganizationInfoBiz {
             //获取当前节点的子节点
             List<OrganizationInfoBo> children = parentGroupMap.get(currentNode.getCode());
             if (CollectionUtils.isEmpty(children)) {
+                currentNode.setChildren(Lists.newArrayList());
                 continue;
             }
             currentNode.setChildren(children);

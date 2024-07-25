@@ -28,6 +28,14 @@ public interface MenuInfoBiz {
     boolean editById(MenuInfoBo editMenuInfoBo);
 
     /**
+     * 通过菜单编码删除菜单
+     *
+     * @param menuCode menuCode
+     * @return success true orElse false
+     */
+    boolean deleteByCode(String menuCode);
+
+    /**
      * 查询record集合
      *
      * @return record list

@@ -34,6 +34,8 @@ public class OrganizationInfoListResponse {
 
     private java.util.Date updateTime;
 
+    private Boolean open;
+
     private List<OrganizationInfoListResponse> children;
 
 

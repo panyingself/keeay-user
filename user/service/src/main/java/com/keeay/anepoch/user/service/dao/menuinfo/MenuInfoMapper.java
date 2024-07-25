@@ -20,4 +20,11 @@ public interface MenuInfoMapper extends BaseMapper<MenuInfo>{
      * @return 菜单信息
      */
     List<MenuInfo> getMenuListByMenuCodes(@Param("menuCodes") List<String> menuCodes);
+
+    /**
+     * 通过menuCode删除数据
+     * @param menuCode menuCode
+     * @return delete count
+     */
+    int deleteByMenuCode(@Param("menuCode") String menuCode);
 }

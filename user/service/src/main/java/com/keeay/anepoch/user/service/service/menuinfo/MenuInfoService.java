@@ -16,4 +16,12 @@ public interface MenuInfoService extends BaseService<MenuInfo, Long> {
      * @return 菜单信息
      */
     List<MenuInfo> listByMenuCodes(List<String> menuCodes);
+
+    /**
+     * 通过menuCode删除数据
+     *
+     * @param menuCode menuCode
+     * @return success true orElse false
+     */
+    Boolean deleteByMenuCode(String menuCode);
 }

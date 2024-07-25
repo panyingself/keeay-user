@@ -93,6 +93,29 @@ public class MenuInfoBizImpl implements MenuInfoBiz {
     }
 
     /**
+     * 通过菜单编码删除菜单
+     *
+     * @param menuCode menuCode
+     * @return success true orElse false
+     */
+    @Override
+    public boolean deleteByCode(String menuCode) {
+        log.info("deleteByCode biz start, menuCode : {}", menuCode);
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected Boolean process() {
+                //查询是否还有子菜单
+                MenuInfo query = new MenuInfo();
+                query.setParentMenuCode(menuCode);
+                List<MenuInfo> childrenList = menuInfoService.list(query);
+                ConditionUtils.checkArgument(CollectionUtils.isEmpty(childrenList), "还有子菜单.不允许删除");
+                //do delete
+                return menuInfoService.deleteByMenuCode(menuCode);
+            }
+        }.execute();
+    }
+
+    /**
      * 查询record集合
      *
      * @return record list

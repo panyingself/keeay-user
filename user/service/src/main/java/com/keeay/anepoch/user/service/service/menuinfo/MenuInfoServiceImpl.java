@@ -5,6 +5,7 @@ import com.keeay.anepoch.user.service.dao.menuinfo.MenuInfoMapper;
 import com.keeay.anepoch.user.service.model.MenuInfo;
 import com.keeay.anepoch.user.service.service.BaseServiceImpl;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -31,4 +32,20 @@ public class MenuInfoServiceImpl extends BaseServiceImpl<MenuInfo, Long> impleme
         }
         return menuInfoMapper.getMenuListByMenuCodes(menuCodes);
     }
+
+    /**
+     * 通过menuCode删除数据
+     *
+     * @param menuCode menuCode
+     * @return success true orElse false
+     */
+    @Override
+    public Boolean deleteByMenuCode(String menuCode) {
+        if(StringUtils.isBlank(menuCode)){
+            return false;
+        }
+        return menuInfoMapper.deleteByMenuCode(menuCode) > 0;
+    }
+
+
 }

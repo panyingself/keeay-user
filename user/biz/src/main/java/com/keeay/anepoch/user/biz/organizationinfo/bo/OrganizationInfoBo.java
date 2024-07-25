@@ -57,6 +57,8 @@ public class OrganizationInfoBo implements Serializable {
      */
     private java.util.Date updateTime;
 
+    private Boolean open;
+
     private List<OrganizationInfoBo> children;
 
     @Override

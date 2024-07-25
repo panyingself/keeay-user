@@ -37,6 +37,11 @@ public class MenuInfoController {
         return menuInfoBiz.editById(editMenuInfoBo);
     }
 
+    @PostMapping("deleteByCode")
+    public boolean deleteByCode(@RequestBody MenuInfoEditRequest editMenuInfoRequest){
+        return menuInfoBiz.deleteByCode(editMenuInfoRequest.getMenuCode());
+    }
+
     /**
      * 权限菜单树查询(ALL)
      */
