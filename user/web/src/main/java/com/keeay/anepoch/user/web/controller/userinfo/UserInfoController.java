@@ -65,6 +65,29 @@ public class UserInfoController {
     }
 
     /**
+     * 修改记录
+     *
+     * @param editUserInfoRequest editUserInfoRequest
+     * @return success true orElse false
+     */
+    @PostMapping("changeEnable")
+    public boolean changeEnable(@RequestBody UserInfoEditRequest editUserInfoRequest) {
+        UserInfoBo editUserInfoBo = JsonMoreUtils.toBean(JsonMoreUtils.toJson(editUserInfoRequest), UserInfoBo.class);
+        return userInfoBiz.changeEnable(editUserInfoBo);
+    }
+
+    /**
+     * 新增记录
+     *
+     * @param addUserInfoRequest addUserInfoRequest
+     * @return success true orElse false
+     */
+    @PostMapping("removeByUserCode")
+    public boolean removeByUserCode(@RequestBody UserInfoAddRequest addUserInfoRequest) {
+        return userInfoBiz.removeByUserCode(addUserInfoRequest.getUserCode());
+    }
+
+    /**
      * 记录列表
      *
      * @param queryUserInfoRequest queryUserInfoRequest

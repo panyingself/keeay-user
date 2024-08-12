@@ -3,6 +3,8 @@ package com.keeay.anepoch.user.biz.userroleinfo;
 
 import com.keeay.anepoch.base.commons.utils.ConditionUtils;
 import com.keeay.anepoch.base.commons.utils.SplitterUtils;
+import com.keeay.anepoch.user.biz.roleinfo.RoleInfoBiz;
+import com.keeay.anepoch.user.biz.roleinfo.bo.RoleInfoBo;
 import com.keeay.anepoch.user.service.model.*;
 import com.keeay.anepoch.user.biz.userroleinfo.bo.*;
 import com.keeay.anepoch.user.service.service.userroleinfo.UserRoleInfoService;
@@ -17,8 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -30,6 +32,40 @@ import java.util.Objects;
 public class UserRoleInfoBizImpl implements UserRoleInfoBiz {
     @Resource
     private UserRoleInfoService userRoleInfoService;
+    @Resource
+    private RoleInfoBiz roleInfoBiz;
+
+    /**
+     * save record 有记录就修改，没记录就新增。
+     *
+     * @param saveUserRoleInfoBo addUserRoleInfoBo
+     * @return success true orElse false
+     */
+    @Override
+    public boolean saveByUserCode(UserRoleInfoBo saveUserRoleInfoBo) {
+        log.info("saveByUserCode biz start , saveUserRoleInfoBo : {}", saveUserRoleInfoBo);
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(Objects.nonNull(saveUserRoleInfoBo), "saveUserRoleInfoBo is null");
+            }
+
+            @Override
+            protected Boolean process() {
+                List<UserRoleInfo> oldUserRoleInfoList = userRoleInfoService.getListByUserCodeList(Lists.newArrayList(saveUserRoleInfoBo.getUserCode()));
+                if (CollectionUtils.isEmpty(oldUserRoleInfoList)) {
+                    add(saveUserRoleInfoBo);
+                    log.info("saveByUserCode fast end , new record");
+                    return true;
+                }
+                //修改记录
+                UserRoleInfo waitToUpdate = UserRoleInfoBoConverter.convertToUserRoleInfo(saveUserRoleInfoBo);
+                userRoleInfoService.updateByUserCode(waitToUpdate);
+                log.info("saveByUserCode fast end , update record");
+                return true;
+            }
+        }.execute();
+    }
 
     /**
      * 新增 record
@@ -79,6 +115,34 @@ public class UserRoleInfoBizImpl implements UserRoleInfoBiz {
                 //修改记录
                 UserRoleInfo waitToUpdate = UserRoleInfoBoConverter.convertToUserRoleInfo(editUserRoleInfoBo);
                 userRoleInfoService.update(waitToUpdate);
+                return true;
+            }
+        }.execute();
+    }
+
+    /**
+     * 修改 record
+     *
+     * @param editUserRoleInfoBo editUserRoleInfoBo
+     * @return success true orElse false
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean editByUserCode(UserRoleInfoBo editUserRoleInfoBo) {
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(Objects.nonNull(editUserRoleInfoBo), "editUserRoleInfoBo is null");
+                ConditionUtils.checkArgument(Objects.nonNull(editUserRoleInfoBo.getUserCode()), "editUserRoleInfoBo userCode is null");
+            }
+
+            @Override
+            protected Boolean process() {
+                List<UserRoleInfo> oldUserRoleInfoList = userRoleInfoService.getListByUserCodeList(Lists.newArrayList(editUserRoleInfoBo.getUserCode()));
+                ConditionUtils.checkArgument(CollectionUtils.isNotEmpty(oldUserRoleInfoList), "oldUserRoleInfoList is empty");
+                //修改记录
+                UserRoleInfo waitToUpdate = UserRoleInfoBoConverter.convertToUserRoleInfo(editUserRoleInfoBo);
+                userRoleInfoService.updateByUserCode(waitToUpdate);
                 return true;
             }
         }.execute();
@@ -161,6 +225,60 @@ public class UserRoleInfoBizImpl implements UserRoleInfoBiz {
                     return Lists.newArrayListWithCapacity(0);
                 }
                 return SplitterUtils.SPLITTER_COMMA.splitToList(roleCodeListStr);
+            }
+        }.execute();
+    }
+
+    /**
+     * 通过userCodes查询用户角色关联信息
+     *
+     * @param userCodes userCodes
+     * @return list
+     */
+    @Override
+    public List<UserRoleInfoBo> fetchListByUserCodes(List<String> userCodes) {
+        log.info("fetchListByUserCodes biz start, userCodes : {}", userCodes);
+        return new BaseBizTemplate<List<UserRoleInfoBo>>() {
+            @Override
+            protected List<UserRoleInfoBo> process() {
+                if (CollectionUtils.isEmpty(userCodes)) {
+                    return Lists.newArrayListWithCapacity(0);
+                }
+                List<UserRoleInfo> listFromDb = userRoleInfoService.getListByUserCodeList(userCodes);
+                if (CollectionUtils.isEmpty(listFromDb)) {
+                    log.warn("fetchListByUserCodes biz fast end, listFromDb is empty");
+                    return Lists.newArrayListWithCapacity(0);
+                }
+                List<UserRoleInfoBo> resultList = JsonMoreUtils.ofList(JsonMoreUtils.toJson(listFromDb), UserRoleInfoBo.class);
+                //查询角色信息
+                List<String> roleCodeList = listFromDb.stream()
+                        .map(UserRoleInfo::getRoleCodeList)
+                        .map(SplitterUtils.SPLITTER_COMMA::splitToList)
+                        .flatMap(Collection::stream)
+                        .distinct()
+                        .collect(Collectors.toList());
+                List<RoleInfoBo> roleInfoBoList = roleInfoBiz.fetchListByCodeList(roleCodeList);
+                if (CollectionUtils.isEmpty(roleInfoBoList)) {
+                    log.warn("fetchListByUserCodes biz fast end, roleInfoBoList is empty");
+                    return Lists.newArrayListWithCapacity(0);
+                }
+                Map<String, RoleInfoBo> roleMap = roleInfoBoList.stream()
+                        .collect(Collectors.toMap(RoleInfoBo::getRoleCode, data -> data, (k, v) -> k));
+                //wrap role
+                resultList.forEach(data -> {
+                    String roleStr = data.getRoleCodeList();
+                    if (StringUtils.isBlank(roleStr)) {
+                        return;
+                    }
+                    List<String> currentRoleCodeList = SplitterUtils.SPLITTER_COMMA.splitToList(roleStr);
+                    List<RoleInfoBo> currentRoleList = Lists.newArrayList();
+                    currentRoleCodeList.forEach(roleCode -> {
+                        Optional.ofNullable(roleMap.get(roleCode)).ifPresent(currentRoleList::add);
+                    });
+                    data.setRoleInfoBoList(currentRoleList);
+
+                });
+                return resultList;
             }
         }.execute();
     }

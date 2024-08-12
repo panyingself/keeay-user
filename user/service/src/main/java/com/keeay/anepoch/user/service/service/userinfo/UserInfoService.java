@@ -13,9 +13,17 @@ public interface UserInfoService extends BaseService<UserInfo, Long> {
      * 分页查询用户列表
      *
      * @param userInfoQuery 用户信息
-     * @param pageNum  页码
-     * @param pageSize 每页显示的条数
+     * @param pageNum       页码
+     * @param pageSize      每页显示的条数
      * @return 用户列表
      */
     CommonPage<UserInfo> pageList(UserInfoQuery userInfoQuery, Integer pageNum, Integer pageSize);
+
+    /**
+     * 根据userCode删除数据
+     *
+     * @param userCode userCode
+     * @return success true orElse false
+     */
+    Boolean deleteByUserCode(String userCode);
 }

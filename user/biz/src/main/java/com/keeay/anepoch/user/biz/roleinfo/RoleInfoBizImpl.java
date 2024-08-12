@@ -160,5 +160,30 @@ public class RoleInfoBizImpl implements RoleInfoBiz {
             }
         }.execute();
     }
+
+    /**
+     * 根据codeList查询list
+     *
+     * @param codeList codeList
+     * @return list
+     */
+    @Override
+    public List<RoleInfoBo> fetchListByCodeList(List<String> codeList) {
+        log.info("fetchListByCodeList biz start, codeList : {}", codeList);
+        return new BaseBizTemplate<List<RoleInfoBo>>() {
+            @Override
+            protected List<RoleInfoBo> process() {
+                if (CollectionUtils.isEmpty(codeList)) {
+                    return Lists.newArrayListWithCapacity(0);
+                }
+                //查询role
+                List<RoleInfo> listFromDb = roleInfoService.getListByCodeList(codeList);
+                if (CollectionUtils.isEmpty(listFromDb)) {
+                    return Lists.newArrayListWithCapacity(0);
+                }
+                return JsonMoreUtils.ofList(JsonMoreUtils.toJson(listFromDb), RoleInfoBo.class);
+            }
+        }.execute();
+    }
 }
 

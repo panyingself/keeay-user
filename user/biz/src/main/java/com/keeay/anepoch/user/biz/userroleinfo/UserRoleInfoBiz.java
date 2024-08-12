@@ -12,6 +12,13 @@ import java.util.List;
  */
 public interface UserRoleInfoBiz {
     /**
+     * save record 有记录就修改，没记录就新增。
+     *
+     * @param addUserRoleInfoBo addUserRoleInfoBo
+     * @return success true orElse false
+     */
+    boolean saveByUserCode(UserRoleInfoBo addUserRoleInfoBo);
+    /**
      * 新增 record
      *
      * @param addUserRoleInfoBo addUserRoleInfoBo
@@ -26,6 +33,14 @@ public interface UserRoleInfoBiz {
      * @return success true orElse false
      */
     boolean editById(UserRoleInfoBo editUserRoleInfoBo);
+
+    /**
+     * 修改 record
+     *
+     * @param editUserRoleInfoBo editUserRoleInfoBo
+     * @return success true orElse false
+     */
+    boolean editByUserCode(UserRoleInfoBo editUserRoleInfoBo);
 
     /**
      * 查询record集合
@@ -50,5 +65,13 @@ public interface UserRoleInfoBiz {
      * @return role list
      */
     List<String> getRoleListByUserCode(String userCode);
+
+    /**
+     * 通过userCodes查询用户角色关联信息
+     *
+     * @param userCodes userCodes
+     * @return list
+     */
+    List<UserRoleInfoBo> fetchListByUserCodes(List<String> userCodes);
 }
 

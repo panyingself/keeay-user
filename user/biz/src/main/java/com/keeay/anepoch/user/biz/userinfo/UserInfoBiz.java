@@ -29,6 +29,22 @@ public interface UserInfoBiz {
     boolean editById(UserInfoBo editUserInfoBo);
 
     /**
+     * 修改 record active状态
+     *
+     * @param editUserInfoBo editUserInfoBo
+     * @return success true orElse false
+     */
+    boolean changeEnable(UserInfoBo editUserInfoBo);
+
+    /**
+     * 新增 record
+     *
+     * @param userCode userCode
+     * @return success true orElse false
+     */
+    boolean removeByUserCode(String userCode);
+
+    /**
      * 查询record集合
      *
      * @param queryUserInfoBo queryUserInfoBo

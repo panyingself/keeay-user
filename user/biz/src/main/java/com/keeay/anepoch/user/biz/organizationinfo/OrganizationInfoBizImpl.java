@@ -167,5 +167,26 @@ public class OrganizationInfoBizImpl implements OrganizationInfoBiz {
             }
         }.execute();
     }
+
+    /**
+     * 通过codes 获取 list
+     *
+     * @param organizationCodeList organizationCodeList
+     * @return data list
+     */
+    @Override
+    public List<OrganizationInfoBo> fetchListByCodes(List<String> organizationCodeList) {
+        log.info("fetchListByCodes biz start , organizationCodeList : {}", organizationCodeList);
+        return new BaseBizTemplate<List<OrganizationInfoBo>>() {
+            @Override
+            protected List<OrganizationInfoBo> process() {
+                List<OrganizationInfo> listFromDb = organizationInfoService.getListByCodes(organizationCodeList);
+                if (CollectionUtils.isEmpty(listFromDb)) {
+                    return Lists.newArrayListWithCapacity(0);
+                }
+                return JsonMoreUtils.ofList(JsonMoreUtils.toJson(listFromDb), OrganizationInfoBo.class);
+            }
+        }.execute();
+    }
 }
 

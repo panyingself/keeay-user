@@ -24,11 +24,5 @@
             <artifactId>user-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-        <!--接入谷歌MFA多因素认证-->
-<!--        <dependency>-->
-<!--            <groupId>com.warrenstrange.googleauth</groupId>-->
-<!--            <artifactId>google-auth-library</artifactId>-->
-<!--            <version>1.25.0</version>-->
-<!--        </dependency>-->
     </dependencies>
 </project>

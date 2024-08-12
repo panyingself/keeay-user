@@ -193,6 +193,16 @@
 		<include refid="listRoleInfoWhere"/>
     </select>
 
+	<!--codeList查询-->
+	<select id="getListByCodeList" resultMap="roleInfoResultMap">
+		SELECT <include refid="RoleInfoColumns" /> FROM role_info
+		where
+		role_code in
+		<foreach collection="codeList" item="code" open="(" separator="," close=")">
+			#{code}
+		</foreach>
+	</select>
+
 	<!--该方法适用于，获取的数据条数小于等于1 如有特殊需要自己实现-->
 	<select id="getDetailById" resultMap="roleInfoResultMap">
 		SELECT <include refid="RoleInfoColumns" />

@@ -228,6 +228,16 @@
 		<include refid="listOrganizationInfoWhere"/>
     </select>
 
+	<!--根据codeList查询-->
+	<select id="getListByCodes" resultMap="organizationInfoResultMap">
+		SELECT <include refid="OrganizationInfoColumns" /> FROM organization_info
+		where
+		code in
+		<foreach collection="organizationCodeList" item="code" open="(" separator="," close=")">
+			#{code}
+		</foreach>
+	</select>
+
 	<!--该方法适用于，获取的数据条数小于等于1 如有特殊需要自己实现-->
 	<select id="getDetailById" resultMap="organizationInfoResultMap">
 		SELECT <include refid="OrganizationInfoColumns" />

@@ -172,6 +172,33 @@
 	        id = #{id} 
 	</update>
 
+
+	<update id="updateByUserCode" >
+		UPDATE user_role_info SET
+		<trim suffixOverrides=",">
+			<if test="roleCodeList!=null">
+				role_code_list = #{roleCodeList,jdbcType=VARCHAR} ,
+			</if>
+			<if test="remark!=null">
+				remark = #{remark,jdbcType=VARCHAR} ,
+			</if>
+			<if test="createUser!=null">
+				create_user = #{createUser,jdbcType=VARCHAR} ,
+			</if>
+			<if test="createTime!=null">
+				create_time = #{createTime,jdbcType=TIMESTAMP} ,
+			</if>
+			<if test="updateUser!=null">
+				update_user = #{updateUser,jdbcType=VARCHAR} ,
+			</if>
+			<if test="updateTime!=null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP} ,
+			</if>
+		</trim>
+		WHERE
+		user_code = #{userCode}
+	</update>
+
 	<!--逻辑删除记录-->
 	<delete id="delete">
 		UPDATE user_role_info SET delete_flag = 1
@@ -188,6 +215,16 @@
     	SELECT <include refid="UserRoleInfoColumns" /> FROM user_role_info
 		<include refid="listUserRoleInfoWhere"/>
     </select>
+	<!--userCodeList查询-->
+	<select id="getListByUserCodeList" resultMap="userRoleInfoResultMap">
+		SELECT <include refid="UserRoleInfoColumns" /> FROM user_role_info
+		where
+		user_code in
+		<foreach collection="userCodeList" item="code" open="(" separator="," close=")">
+			#{code}
+		</foreach>
+	</select>
+
 
 	<!--该方法适用于，获取的数据条数小于等于1 如有特殊需要自己实现-->
 	<select id="getDetailById" resultMap="userRoleInfoResultMap">
