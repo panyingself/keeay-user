@@ -45,7 +45,7 @@ public class RoleMenuInfoController {
     @PostMapping("editById")
     public boolean edit(@RequestBody RoleMenuInfoEditRequest editRoleMenuInfoRequest) {
         RoleMenuInfoBo editRoleMenuInfoBo = JsonMoreUtils.toBean(JsonMoreUtils.toJson(editRoleMenuInfoRequest), RoleMenuInfoBo.class);
-        return roleMenuInfoBiz.editById(editRoleMenuInfoBo);
+        return roleMenuInfoBiz.editByRoleCode(editRoleMenuInfoBo);
     }
 
     /**

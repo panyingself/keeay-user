@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.Serializable;
+import java.util.List;
+
 /**
  * @author py
  * @date 2019/4
@@ -16,7 +18,7 @@ public class RoleMenuInfoBo implements Serializable {
 	/** 角色code */
 	private String roleCode;
 	/** 角色拥有的菜单code集，全选: menu_code *  (10*) */
-	private String menuCodes;
+	private List<String> menuCodeList;
 	/** 创建人 */
 	private String createUser;
 	/** 创建时间 */

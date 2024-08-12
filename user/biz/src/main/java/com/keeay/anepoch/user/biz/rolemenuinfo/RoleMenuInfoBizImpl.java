@@ -46,6 +46,8 @@ public class RoleMenuInfoBizImpl implements RoleMenuInfoBiz {
             @Override
             protected void checkParam() {
                 ConditionUtils.checkArgument(Objects.nonNull(addRoleMenuInfoBo), "addRoleMenuInfoBo is null");
+                ConditionUtils.checkArgument(Objects.nonNull(addRoleMenuInfoBo.getRoleCode()), "addRoleMenuInfoBo role code is null");
+                ConditionUtils.checkArgument(CollectionUtils.isNotEmpty(addRoleMenuInfoBo.getMenuCodeList()), "addRoleMenuInfoBo menuCodeList is empty");
             }
 
             @Override
@@ -66,21 +68,29 @@ public class RoleMenuInfoBizImpl implements RoleMenuInfoBiz {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean editById(RoleMenuInfoBo editRoleMenuInfoBo) {
+    public boolean editByRoleCode(RoleMenuInfoBo editRoleMenuInfoBo) {
         return new BaseBizTemplate<Boolean>() {
             @Override
             protected void checkParam() {
                 ConditionUtils.checkArgument(Objects.nonNull(editRoleMenuInfoBo), "editRoleMenuInfoBo is null");
-                ConditionUtils.checkArgument(Objects.nonNull(editRoleMenuInfoBo.getId()), "editRoleMenuInfoBo id is null");
+                ConditionUtils.checkArgument(Objects.nonNull(editRoleMenuInfoBo.getRoleCode()), "editRoleMenuInfoBo roleCode is null");
             }
 
             @Override
             protected Boolean process() {
-                RoleMenuInfo oldRoleMenuInfo = roleMenuInfoService.getDetailById(editRoleMenuInfoBo.getId());
+                RoleMenuInfo oldRoleMenuInfo = roleMenuInfoService.getOneByRoleCode(editRoleMenuInfoBo.getRoleCode());
+                //新增逻辑
+                if (Objects.isNull(oldRoleMenuInfo) && CollectionUtils.isNotEmpty(editRoleMenuInfoBo.getMenuCodeList())) {
+                    RoleMenuInfoBo addRoleMenuInfoBo = new RoleMenuInfoBo();
+                    addRoleMenuInfoBo.setRoleCode(editRoleMenuInfoBo.getRoleCode());
+                    addRoleMenuInfoBo.setMenuCodeList(editRoleMenuInfoBo.getMenuCodeList());
+                    add(addRoleMenuInfoBo);
+                    return true;
+                }
                 ConditionUtils.checkArgument(Objects.nonNull(oldRoleMenuInfo), "oldRoleMenuInfo is null");
                 //修改记录
                 RoleMenuInfo waitToUpdate = RoleMenuInfoBoConverter.convertToRoleMenuInfo(editRoleMenuInfoBo);
-                roleMenuInfoService.update(waitToUpdate);
+                roleMenuInfoService.updateByRoleCode(waitToUpdate);
                 return true;
             }
         }.execute();
@@ -159,9 +169,37 @@ public class RoleMenuInfoBizImpl implements RoleMenuInfoBiz {
                     return Lists.newArrayListWithCapacity(0);
                 }
                 return listFromDb.stream()
-                        .filter(data -> StringUtils.isNotBlank(data.getMenuCodes()))
-                        .map(data -> SplitterUtils.SPLITTER_COMMA.splitToList(data.getMenuCodes()))
+                        .filter(data -> StringUtils.isNotBlank(data.getMenuCodeListStr()))
+                        .map(data -> SplitterUtils.SPLITTER_COMMA.splitToList(data.getMenuCodeListStr()))
                         .flatMap(Collection::stream).distinct().collect(Collectors.toList());
+            }
+        }.execute();
+    }
+
+    /**
+     * 根据角色code获取roleMenuData
+     *
+     * @param roleCodeList roleCodeList
+     * @return list
+     */
+    @Override
+    public List<RoleMenuInfoBo> getRoleMenuListByRoleCodes(List<String> roleCodeList) {
+        log.info("getRoleMenuListByRoleCodes biz start, roleCodeList : {}", JsonMoreUtils.toJson(roleCodeList));
+        return new BaseBizTemplate<List<RoleMenuInfoBo>>() {
+            @Override
+            protected List<RoleMenuInfoBo> process() {
+                if (CollectionUtils.isEmpty(roleCodeList)) {
+                    log.info("getMenuCodeListByRoleCodes biz fast end, roleCodeList is empty");
+                    return Lists.newArrayListWithCapacity(0);
+                }
+                List<RoleMenuInfo> listFromDb = roleMenuInfoService.listByRoleCodes(roleCodeList);
+                if (CollectionUtils.isEmpty(listFromDb)) {
+                    log.info("getMenuCodeListByRoleCodes biz fast end, listFromDb is empty");
+                    return Lists.newArrayListWithCapacity(0);
+                }
+                return listFromDb.stream()
+                        .map(RoleMenuInfoBoConverter::convertToRoleMenuInfoBo)
+                        .collect(Collectors.toList());
             }
         }.execute();
     }

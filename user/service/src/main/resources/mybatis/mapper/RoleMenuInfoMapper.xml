@@ -8,7 +8,7 @@
 	<resultMap id="roleMenuInfoResultMap" type="com.keeay.anepoch.user.service.model.RoleMenuInfo">
         <result property="id" column="id"/>
         <result property="roleCode" column="role_code"/>
-        <result property="menuCodes" column="menu_codes"/>
+        <result property="menuCodeListStr" column="menu_codes"/>
         <result property="createUser" column="create_user"/>
         <result property="createTime" column="create_time"/>
         <result property="updateUser" column="update_user"/>
@@ -24,14 +24,11 @@
 	<sql id="listRoleMenuInfoWhere">
 		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
 		<where>
-			<if test="id!=null">
-				AND id = #{id}
-			</if>
 			<if test="roleCode!=null">
 				AND role_code = #{roleCode}
 			</if>
-			<if test="menuCodes!=null">
-				AND menu_codes = #{menuCodes}
+			<if test="menuCodeListStr!=null">
+				AND menu_codes = #{menuCodeListStr}
 			</if>
 			<if test="createUser!=null">
 				AND create_user = #{createUser}
@@ -92,7 +89,7 @@
 			<if test="roleCode!=null">
 				role_code,
 			</if>
-			<if test="menuCodes!=null">
+			<if test="menuCodeListStr!=null">
 				menu_codes,
 			</if>
 			<if test="createUser!=null">
@@ -115,8 +112,8 @@
 				<if test="roleCode!=null">
 						#{roleCode,jdbcType=VARCHAR},
 				</if>
-				<if test="menuCodes!=null">
-						#{menuCodes,jdbcType=LONGVARCHAR},
+				<if test="menuCodeListStr!=null">
+						#{menuCodeListStr,jdbcType=LONGVARCHAR},
 				</if>
 				<if test="createUser!=null">
 						#{createUser,jdbcType=VARCHAR},
@@ -139,8 +136,8 @@
 	        <if test="roleCode!=null">
 	        role_code = #{roleCode,jdbcType=VARCHAR} ,
 	        </if>
-	        <if test="menuCodes!=null">
-	        menu_codes = #{menuCodes,jdbcType=LONGVARCHAR} ,
+	        <if test="menuCodeListStr!=null">
+	        menu_codes = #{menuCodeListStr,jdbcType=LONGVARCHAR} ,
 	        </if>
 	        <if test="createUser!=null">
 	        create_user = #{createUser,jdbcType=VARCHAR} ,
@@ -157,6 +154,29 @@
 		</trim>
         WHERE 
 	        id = #{id} 
+	</update>
+
+	<update id="updateByRoleCode" >
+		UPDATE role_menu_info SET
+		<trim suffixOverrides=",">
+			<if test="menuCodeListStr!=null">
+				menu_codes = #{menuCodeListStr,jdbcType=LONGVARCHAR} ,
+			</if>
+			<if test="createUser!=null">
+				create_user = #{createUser,jdbcType=VARCHAR} ,
+			</if>
+			<if test="createTime!=null">
+				create_time = #{createTime,jdbcType=TIMESTAMP} ,
+			</if>
+			<if test="updateUser!=null">
+				update_user = #{updateUser,jdbcType=VARCHAR} ,
+			</if>
+			<if test="updateTime!=null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP} ,
+			</if>
+		</trim>
+		WHERE
+		role_code = #{roleCode}
 	</update>
 
 	<!--逻辑删除记录-->
@@ -181,6 +201,13 @@
 		SELECT <include refid="RoleMenuInfoColumns" />
 		FROM role_menu_info
 		where id = #{id}
+	</select>
+
+	<!--该方法适用于，获取的数据条数小于等于1 如有特殊需要自己实现-->
+	<select id="getOneByRoleCode" resultMap="roleMenuInfoResultMap">
+		SELECT <include refid="RoleMenuInfoColumns" />
+		FROM role_menu_info
+		where role_code = #{roleCode}
 	</select>
 
 	<!--该方法适用于，获取的数据条数小于等于1 如有特殊需要自己实现-->

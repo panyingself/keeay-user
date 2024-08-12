@@ -2,12 +2,13 @@
 package com.keeay.anepoch.user.biz.roleinfo;
 
 import com.keeay.anepoch.base.commons.base.page.CommonPage;
+import com.keeay.anepoch.base.commons.lang.Safes;
 import com.keeay.anepoch.base.commons.utils.ConditionUtils;
-import com.keeay.anepoch.user.biz.userinfo.bo.UserInfoBo;
+import com.keeay.anepoch.user.biz.rolemenuinfo.RoleMenuInfoBiz;
+import com.keeay.anepoch.user.biz.rolemenuinfo.bo.RoleMenuInfoBo;
 import com.keeay.anepoch.user.service.model.*;
 import com.keeay.anepoch.user.biz.roleinfo.bo.*;
 import com.keeay.anepoch.user.service.model.query.RoleInfoQuery;
-import com.keeay.anepoch.user.service.model.query.UserInfoQuery;
 import com.keeay.anepoch.user.service.service.roleinfo.RoleInfoService;
 import com.keeay.anepoch.user.biz.roleinfo.converter.RoleInfoBoConverter;
 import com.keeay.anepoch.base.commons.monitor.BaseBizTemplate;
@@ -19,9 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -33,6 +36,8 @@ import java.util.Objects;
 public class RoleInfoBizImpl implements RoleInfoBiz {
     @Resource
     private RoleInfoService roleInfoService;
+    @Resource
+    private RoleMenuInfoBiz roleMenuInfoBiz;
 
     /**
      * 新增 record
@@ -54,7 +59,20 @@ public class RoleInfoBizImpl implements RoleInfoBiz {
                 //新增角色信息
                 RoleInfo newRoleInfo = RoleInfoBoConverter.convertToRoleInfo(addRoleInfoBo);
                 roleInfoService.insert(newRoleInfo);
+                //如果菜单编码不为空，增加角色菜单编码
+                insertRoleMenuData(addRoleInfoBo);
                 return true;
+            }
+
+            private void insertRoleMenuData(RoleInfoBo addRoleInfoBo) {
+                if (CollectionUtils.isEmpty(addRoleInfoBo.getMenuCodeList())) {
+                    return;
+                }
+                RoleMenuInfoBo addRoleMenuInfoBo = new RoleMenuInfoBo();
+                addRoleMenuInfoBo.setRoleCode(addRoleInfoBo.getRoleCode());
+                addRoleMenuInfoBo.setMenuCodeList(addRoleInfoBo.getMenuCodeList());
+                roleMenuInfoBiz.add(addRoleMenuInfoBo);
+
             }
         }.execute();
     }
@@ -82,7 +100,16 @@ public class RoleInfoBizImpl implements RoleInfoBiz {
                 //修改记录
                 RoleInfo waitToUpdate = RoleInfoBoConverter.convertToRoleInfo(editRoleInfoBo);
                 roleInfoService.update(waitToUpdate);
+                //修改角色菜单信息
+                updateRoleMenuData(editRoleInfoBo);
                 return true;
+            }
+
+            private void updateRoleMenuData(RoleInfoBo editRoleInfoBo) {
+                RoleMenuInfoBo editRoleMenuInfoBo = new RoleMenuInfoBo();
+                editRoleMenuInfoBo.setRoleCode(editRoleInfoBo.getRoleCode());
+                editRoleMenuInfoBo.setMenuCodeList(editRoleInfoBo.getMenuCodeList());
+                roleMenuInfoBiz.editByRoleCode(editRoleMenuInfoBo);
             }
         }.execute();
     }
@@ -131,9 +158,32 @@ public class RoleInfoBizImpl implements RoleInfoBiz {
                     new CommonPage<>(pageResult.getCurrentPage(), pageResult.getPageSize(), pageResult.getTotalCount(), Lists.newArrayList());
                 }
                 List<RoleInfoBo> list = JsonMoreUtils.ofList(JsonMoreUtils.toJson(dataList), RoleInfoBo.class);
+                //wrap roleMenuData
+                wrapRoleMenuData(list);
                 return new CommonPage<>(pageResult.getCurrentPage(), pageResult.getPageSize(), pageResult.getTotalCount(), list);
             }
         }.execute();
+    }
+
+    private void wrapRoleMenuData(List<RoleInfoBo> roleInfoBoList) {
+        if (CollectionUtils.isEmpty(roleInfoBoList)) {
+            return;
+        }
+        List<String> roleCodeList = roleInfoBoList.stream()
+                .map(RoleInfoBo::getRoleCode)
+                .distinct()
+                .collect(Collectors.toList());
+        List<RoleMenuInfoBo> roleMenuDataList = roleMenuInfoBiz.getRoleMenuListByRoleCodes(roleCodeList);
+        if (CollectionUtils.isEmpty(roleMenuDataList)) {
+            return;
+        }
+        Map<String, RoleMenuInfoBo> roleMenuDataListMap = roleMenuDataList.stream()
+                .collect(Collectors.toMap(RoleMenuInfoBo::getRoleCode, data -> data, (k, v) -> k));
+        roleInfoBoList.forEach(roleInfoBo -> {
+            Optional.ofNullable(roleMenuDataListMap.get(roleInfoBo.getRoleCode())).ifPresent(roleMenuInfoBo -> {
+                roleInfoBo.setMenuCodeList(roleMenuInfoBo.getMenuCodeList());
+            });
+        });
     }
 
     /**

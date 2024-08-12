@@ -25,7 +25,7 @@ public interface RoleMenuInfoBiz {
      * @param editRoleMenuInfoBo editRoleMenuInfoBo
      * @return success true orElse false
      */
-    boolean editById(RoleMenuInfoBo editRoleMenuInfoBo);
+    boolean editByRoleCode(RoleMenuInfoBo editRoleMenuInfoBo);
 
     /**
      * 查询record集合
@@ -50,5 +50,13 @@ public interface RoleMenuInfoBiz {
      * @return 菜单信息集合
      */
     List<String> getMenuCodeListByRoleCodes(List<String> roleCodeList);
+
+    /**
+     * 根据角色code获取roleMenuData
+     *
+     * @param roleCodeList roleCodeList
+     * @return list
+     */
+    List<RoleMenuInfoBo> getRoleMenuListByRoleCodes(List<String> roleCodeList);
 }
 

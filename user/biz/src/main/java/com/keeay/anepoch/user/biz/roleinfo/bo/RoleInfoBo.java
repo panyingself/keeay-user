@@ -6,6 +6,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.Serializable;
+import java.util.List;
+
 /**
  * @author py
  * @date 2019/4
@@ -16,6 +18,10 @@ public class RoleInfoBo extends CommonPage implements Serializable {
 	private Long id;
 	/** 角色code */
 	private String roleCode;
+	/**
+	 * 菜单编码集合
+	 */
+	private List<String> menuCodeList;
 	/** 角色名称 */
 	private String roleName;
 	/** 备注 */

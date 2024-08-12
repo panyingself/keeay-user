@@ -16,7 +16,7 @@ public class RoleMenuInfo implements Serializable {
 	/** 角色code */
 	private String roleCode;
 	/** 角色拥有的菜单code集，全选: menu_code *  (10*) */
-	private String menuCodes;
+	private String menuCodeListStr;
 	/** 创建人 */
 	private String createUser;
 	/** 创建时间 */
