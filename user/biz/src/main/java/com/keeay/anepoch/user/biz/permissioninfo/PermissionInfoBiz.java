@@ -1,6 +1,7 @@
 
 package com.keeay.anepoch.user.biz.permissioninfo;
 
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.user.service.model.*;
 import com.keeay.anepoch.user.biz.permissioninfo.bo.*;
 import com.sun.org.apache.xpath.internal.operations.Bool;
@@ -39,6 +40,14 @@ public interface PermissionInfoBiz {
     List<PermissionInfoBo> list(PermissionInfoBo queryPermissionInfoBo);
 
     /**
+     * 查询record集合
+     *
+     * @param queryPermissionInfoBo queryPermissionInfoBo
+     * @return record list
+     */
+    CommonPage<PermissionInfoBo> pageList(PermissionInfoBo queryPermissionInfoBo);
+
+    /**
      * 查询record detail
      *
      * @param recordId recordId
@@ -62,5 +71,13 @@ public interface PermissionInfoBiz {
      * @return 有 success 没有 false
      */
     Boolean checkUserServletPermission(String userCode, String servletPath);
+
+    /**
+     * 根据code删除权限信息
+     *
+     * @param permissionCode permissionCode
+     * @return success true orElse false
+     */
+    Boolean deleteByCode(String permissionCode);
 }
 

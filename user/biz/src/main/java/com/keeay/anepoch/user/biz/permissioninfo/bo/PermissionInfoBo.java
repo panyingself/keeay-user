@@ -1,16 +1,19 @@
 package com.keeay.anepoch.user.biz.permissioninfo.bo;
 
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
 /**
  * @author py
  * @date 2019/4
  */
 @Data
-public class PermissionInfoBo implements Serializable {
+public class PermissionInfoBo extends CommonPage implements Serializable {
 	/** 主键id */
 	private Long id;
 	/** 权限code */
@@ -27,6 +30,13 @@ public class PermissionInfoBo implements Serializable {
 	private java.util.Date updateTime;
 	/** 更新人 */
 	private String updateUser;
+	private String permissionNameKeyword;
+	private String permissionCodeKeyword;
+	private String uriKeyword;
+	private LocalDateTime createTimeStart;
+	private LocalDateTime createTimeEnd;
+	private LocalDateTime updateTimeStart;
+	private LocalDateTime updateTimeEnd;
 
 	@Override
 	public String toString() {

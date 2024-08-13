@@ -12,8 +12,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class PermissionInfoAddRequest {
     private Long id;
 
-    private String permissionCode;
-
     private String permissionName;
 
     private String uri;

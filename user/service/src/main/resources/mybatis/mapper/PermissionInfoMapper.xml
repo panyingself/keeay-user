@@ -25,6 +25,7 @@
 	<sql id="listPermissionInfoWhere">
 		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
 		<where>
+			1 = 1
 			<if test="id!=null">
 				AND id = #{id}
 			</if>
@@ -173,9 +174,10 @@
 	</update>
 
 	<!--逻辑删除记录-->
-	<delete id="delete">
-		UPDATE permission_info SET delete_flag = 1
-		<include refid="listPermissionInfoWhere"/>
+	<delete id="deleteByCode">
+		delete from permission_info
+		where
+		permission_code = #{permissionCode}
 	</delete>
 
     <!--
@@ -188,6 +190,21 @@
     	SELECT <include refid="PermissionInfoColumns" /> FROM permission_info
 		<include refid="listPermissionInfoWhere"/>
     </select>
+
+	<!--全量查询-->
+	<select id="pageList" resultMap="permissionInfoResultMap">
+		SELECT <include refid="PermissionInfoColumns" /> FROM permission_info
+		<include refid="listPermissionInfoWhere"/>
+		<if test="permissionNameKeyword!=null and permissionNameKeyword != ''">
+			AND permission_name LIKE CONCAT('%',#{permissionNameKeyword},'%')
+		</if>
+		<if test="permissionCodeKeyword!=null and permissionCodeKeyword != ''">
+			AND permission_code LIKE CONCAT('%',#{permissionCodeKeyword},'%')
+		</if>
+		<if test="uriKeyword!=null and uriKeyword != ''">
+			AND uri LIKE CONCAT('%',#{uriKeyword},'%')
+		</if>
+	</select>
 
 	<!--该方法适用于，获取的数据条数小于等于1 如有特殊需要自己实现-->
 	<select id="getDetailById" resultMap="permissionInfoResultMap">

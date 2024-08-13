@@ -1,13 +1,19 @@
 
 package com.keeay.anepoch.user.biz.permissioninfo;
 
+import com.keeay.anepoch.auth.api.context.UserContext;
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.base.commons.lang.Safes;
 import com.keeay.anepoch.base.commons.utils.ConditionUtils;
 import com.keeay.anepoch.user.biz.menuinfo.MenuInfoBiz;
 import com.keeay.anepoch.user.biz.menupermissioninfo.MenuPermissionInfoBiz;
+import com.keeay.anepoch.user.biz.permissioninfo.helper.PermissionHelper;
+import com.keeay.anepoch.user.biz.roleinfo.bo.RoleInfoBo;
 import com.keeay.anepoch.user.biz.userroleinfo.UserRoleInfoBiz;
 import com.keeay.anepoch.user.service.model.*;
 import com.keeay.anepoch.user.biz.permissioninfo.bo.*;
+import com.keeay.anepoch.user.service.model.query.PermissionInfoQuery;
+import com.keeay.anepoch.user.service.model.query.RoleInfoQuery;
 import com.keeay.anepoch.user.service.service.permissioninfo.PermissionInfoService;
 import com.keeay.anepoch.user.biz.permissioninfo.converter.PermissionInfoBoConverter;
 import com.keeay.anepoch.base.commons.monitor.BaseBizTemplate;
@@ -61,6 +67,9 @@ public class PermissionInfoBizImpl implements PermissionInfoBiz {
             protected Boolean process() {
                 //新增角色信息
                 PermissionInfo newPermissionInfo = PermissionInfoBoConverter.convertToPermissionInfo(addPermissionInfoBo);
+                //设置权限编码
+                newPermissionInfo.setPermissionCode(PermissionHelper.generatePermissionCode());
+                newPermissionInfo.setCreateUser(UserContext.getUser().getUserName());
                 permissionInfoService.insert(newPermissionInfo);
                 return true;
             }
@@ -89,6 +98,7 @@ public class PermissionInfoBizImpl implements PermissionInfoBiz {
                 ConditionUtils.checkArgument(Objects.nonNull(oldPermissionInfo), "oldPermissionInfo is null");
                 //修改记录
                 PermissionInfo waitToUpdate = PermissionInfoBoConverter.convertToPermissionInfo(editPermissionInfoBo);
+                waitToUpdate.setUpdateUser(UserContext.getUser().getUserName());
                 permissionInfoService.update(waitToUpdate);
                 return true;
             }
@@ -117,6 +127,34 @@ public class PermissionInfoBizImpl implements PermissionInfoBiz {
                     return Lists.newArrayList();
                 }
                 return JsonMoreUtils.ofList(JsonMoreUtils.toJson(fromDbList), PermissionInfoBo.class);
+            }
+        }.execute();
+    }
+
+    /**
+     * 查询record集合
+     *
+     * @param queryPermissionInfoBo queryPermissionInfoBo
+     * @return record list
+     */
+    @Override
+    public CommonPage<PermissionInfoBo> pageList(PermissionInfoBo queryPermissionInfoBo) {
+        return new BaseBizTemplate<CommonPage<PermissionInfoBo>>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(Objects.nonNull(queryPermissionInfoBo), "queryPermissionInfoBo is null");
+            }
+
+            @Override
+            protected CommonPage<PermissionInfoBo> process() {
+                PermissionInfoQuery permissionInfoQuery = JsonMoreUtils.toBean(JsonMoreUtils.toJson(queryPermissionInfoBo), PermissionInfoQuery.class);
+                CommonPage<PermissionInfo> pageResult = permissionInfoService.pageList(permissionInfoQuery, queryPermissionInfoBo.getCurrentPage().intValue(), queryPermissionInfoBo.getPageSize().intValue());
+                List<PermissionInfo> dataList = pageResult.getDataList();
+                if (CollectionUtils.isEmpty(dataList)) {
+                    new CommonPage<>(pageResult.getCurrentPage(), pageResult.getPageSize(), pageResult.getTotalCount(), Lists.newArrayList());
+                }
+                List<PermissionInfoBo> list = JsonMoreUtils.ofList(JsonMoreUtils.toJson(dataList), PermissionInfoBo.class);
+                return new CommonPage<>(pageResult.getCurrentPage(), pageResult.getPageSize(), pageResult.getTotalCount(), list);
             }
         }.execute();
     }
@@ -205,6 +243,23 @@ public class PermissionInfoBizImpl implements PermissionInfoBiz {
                 }
                 List<String> userPermissions = getUserPermissions(userCode);
                 return Safes.of(userPermissions).contains(servletPath);
+            }
+        }.execute();
+    }
+
+    /**
+     * 根据code删除权限信息
+     *
+     * @param permissionCode permissionCode
+     * @return success true orElse false
+     */
+    @Override
+    public Boolean deleteByCode(String permissionCode) {
+        log.info("deleteByCode biz start , permissionCode : {}", permissionCode);
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected Boolean process() {
+                return permissionInfoService.deleteByCode(permissionCode);
             }
         }.execute();
     }

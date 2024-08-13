@@ -1,12 +1,15 @@
 
 package com.keeay.anepoch.user.web.controller.permissioninfo;
 
+import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.user.biz.permissioninfo.PermissionInfoBiz;
 import com.keeay.anepoch.user.biz.permissioninfo.bo.PermissionInfoBo;
+import com.keeay.anepoch.user.biz.roleinfo.bo.RoleInfoBo;
 import com.keeay.anepoch.user.web.controller.permissioninfo.request.*;
 import com.keeay.anepoch.user.web.controller.permissioninfo.response.*;
 import com.keeay.anepoch.base.commons.utils.JsonMoreUtils;
 import com.google.common.collect.Lists;
+import com.keeay.anepoch.user.web.controller.roleinfo.response.RoleInfoListResponse;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,6 +68,24 @@ public class PermissionInfoController {
     }
 
     /**
+     * 记录列表
+     *
+     * @param queryPermissionInfoRequest queryPermissionInfoRequest
+     * @return list
+     */
+    @PostMapping("pageList")
+    public CommonPage<PermissionInfoListResponse> pageList(@RequestBody PermissionInfoPageQueryRequest queryPermissionInfoRequest) {
+        PermissionInfoBo queryPermissionInfoBo = JsonMoreUtils.toBean(JsonMoreUtils.toJson(queryPermissionInfoRequest), PermissionInfoBo.class);
+        CommonPage<PermissionInfoBo> resultList = permissionInfoBiz.pageList(queryPermissionInfoBo);
+        List<PermissionInfoBo> dataList = resultList.getDataList();
+        if (CollectionUtils.isEmpty(dataList)) {
+            return new CommonPage<>(queryPermissionInfoRequest.getCurrentPage(), queryPermissionInfoRequest.getPageSize(), 0L, Lists.newArrayList());
+        }
+        List<PermissionInfoListResponse> responseList = JsonMoreUtils.ofList(JsonMoreUtils.toJson(dataList), PermissionInfoListResponse.class);
+        return new CommonPage<>(resultList.getCurrentPage(), resultList.getPageSize(), resultList.getTotalCount(), responseList);
+    }
+
+    /**
      * 通过id获取数据详情
      *
      * @param recordId recordId
@@ -88,6 +109,17 @@ public class PermissionInfoController {
     @GetMapping("getUserPermissions")
     public List<String> getUserPermissions(String userCode) {
         return permissionInfoBiz.getUserPermissions(userCode);
+    }
+
+    /**
+     * 通过id获取数据详情
+     *
+     * @param permissionCode permissionCode
+     * @return 数据详情
+     */
+    @GetMapping("deleteByCode")
+    public Boolean deleteByCode(@RequestParam("permissionCode") String permissionCode) {
+        return permissionInfoBiz.deleteByCode(permissionCode);
     }
 }
 
