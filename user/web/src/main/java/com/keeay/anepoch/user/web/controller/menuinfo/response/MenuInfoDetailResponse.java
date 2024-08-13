@@ -4,6 +4,8 @@ import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.List;
+
 /**
  * @author py
  * @date 2019/4
@@ -24,7 +26,7 @@ public class MenuInfoDetailResponse {
 
     private Integer sort;
 
-    private Boolean type;
+    private Integer type;
 
     private java.util.Date createTime;
 
@@ -33,6 +35,8 @@ public class MenuInfoDetailResponse {
     private java.util.Date updateTime;
 
     private String updateUser;
+
+    private List<String> permissionList;
 
 
     @Override

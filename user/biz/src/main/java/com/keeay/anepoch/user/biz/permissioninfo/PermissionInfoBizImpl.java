@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -161,13 +160,13 @@ public class PermissionInfoBizImpl implements PermissionInfoBiz {
             protected List<String> process() {
                 //check用户是否存在
                 //查询用户菜单权限
-                List<String> userMenuCodeList = menuInfoBiz.getUserHasMenuCodeList(userCode);
+                List<String> userMenuCodeList = menuInfoBiz.fetchUserHasMenuCodeList(userCode);
                 if (CollectionUtils.isEmpty(userMenuCodeList)) {
                     log.warn("getUserPermissions biz fast end, userMenuCodeList is empty");
                     return Lists.newArrayListWithCapacity(0);
                 }
                 //通过菜单权限查询接口权限
-                List<String> userPermissionCodeList = menuPermissionInfoBiz.getPermissionCodeList(userMenuCodeList);
+                List<String> userPermissionCodeList = menuPermissionInfoBiz.fetchPermissionCodeList(userMenuCodeList);
                 if (CollectionUtils.isEmpty(userPermissionCodeList)) {
                     log.warn("getUserPermissions biz fast end, userPermissionCodeList is empty");
                     return Lists.newArrayListWithCapacity(0);

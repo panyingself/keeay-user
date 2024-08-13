@@ -172,6 +172,32 @@
 	        id = #{id} 
 	</update>
 
+	<update id="updateByMenuCode" >
+		UPDATE menu_permission_info SET
+		<trim suffixOverrides=",">
+			<if test="permissionCodeList!=null">
+				permission_code_list = #{permissionCodeList,jdbcType=VARCHAR} ,
+			</if>
+			<if test="remark!=null">
+				remark = #{remark,jdbcType=VARCHAR} ,
+			</if>
+			<if test="createUser!=null">
+				create_user = #{createUser,jdbcType=VARCHAR} ,
+			</if>
+			<if test="createTime!=null">
+				create_time = #{createTime,jdbcType=TIMESTAMP} ,
+			</if>
+			<if test="updateUser!=null">
+				update_user = #{updateUser,jdbcType=VARCHAR} ,
+			</if>
+			<if test="updateTime!=null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP} ,
+			</if>
+		</trim>
+		WHERE
+		menu_code = #{menuCode,jdbcType=VARCHAR}
+	</update>
+
 	<!--逻辑删除记录-->
 	<delete id="delete">
 		UPDATE menu_permission_info SET delete_flag = 1

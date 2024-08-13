@@ -28,6 +28,14 @@ public interface MenuPermissionInfoBiz {
     boolean editById(MenuPermissionInfoBo editMenuPermissionInfoBo);
 
     /**
+     * 修改 record
+     *
+     * @param editMenuPermissionInfoBo editMenuPermissionInfoBo
+     * @return success true orElse false
+     */
+    boolean editByMenuCode(MenuPermissionInfoBo editMenuPermissionInfoBo);
+
+    /**
      * 查询record集合
      *
      * @param queryMenuPermissionInfoBo queryMenuPermissionInfoBo
@@ -44,11 +52,19 @@ public interface MenuPermissionInfoBiz {
     MenuPermissionInfoBo fetchDetailById(Long recordId);
 
     /**
+     * 查询record detail
+     *
+     * @param menuCode menuCode
+     * @return record detail
+     */
+    MenuPermissionInfoBo fetchDetailByCode(String menuCode);
+
+    /**
      * 根据菜单编码，获取权限code
      *
      * @param menuCodes menuCodes
      * @return permission codes
      */
-    List<String> getPermissionCodeList(List<String> menuCodes);
+    List<String> fetchPermissionCodeList(List<String> menuCodes);
 }
 

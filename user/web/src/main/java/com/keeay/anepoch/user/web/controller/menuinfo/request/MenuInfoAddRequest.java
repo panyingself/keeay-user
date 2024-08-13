@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author py
@@ -16,6 +17,8 @@ public class MenuInfoAddRequest {
 
     private String parentMenuCode;
 
+    private List<String> permissionList;
+
     private String menuName;
 
     private String path;
@@ -24,7 +27,7 @@ public class MenuInfoAddRequest {
 
     private Integer sort;
 
-    private Boolean type;
+    private Integer type;
 
     private LocalDateTime createTime;
 

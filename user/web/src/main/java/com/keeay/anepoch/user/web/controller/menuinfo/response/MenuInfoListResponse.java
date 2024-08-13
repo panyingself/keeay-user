@@ -27,7 +27,7 @@ public class MenuInfoListResponse {
 
     private Integer sort;
 
-    private Boolean type;
+    private Integer type;
 
     private LocalDateTime createTime;
 

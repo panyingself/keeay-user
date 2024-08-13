@@ -88,6 +88,36 @@ public class MenuPermissionInfoBizImpl implements MenuPermissionInfoBiz {
     }
 
     /**
+     * 修改 record
+     *
+     * @param editMenuPermissionInfoBo editMenuPermissionInfoBo
+     * @return success true orElse false
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean editByMenuCode(MenuPermissionInfoBo editMenuPermissionInfoBo) {
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(Objects.nonNull(editMenuPermissionInfoBo), "editMenuPermissionInfoBo is null");
+                ConditionUtils.checkArgument(StringUtils.isNotBlank(editMenuPermissionInfoBo.getMenuCode()), "editMenuPermissionInfoBo menuCode is null");
+            }
+
+            @Override
+            protected Boolean process() {
+                MenuPermissionInfo query = new MenuPermissionInfo();
+                query.setMenuCode(editMenuPermissionInfoBo.getMenuCode());
+                List<MenuPermissionInfo> oldMenuPermissionInfoList = menuPermissionInfoService.list(query);
+                ConditionUtils.checkArgument(CollectionUtils.isNotEmpty(oldMenuPermissionInfoList), "oldMenuPermissionInfo is null");
+                //修改记录
+                MenuPermissionInfo waitToUpdate = MenuPermissionInfoBoConverter.convertToMenuPermissionInfo(editMenuPermissionInfoBo);
+                menuPermissionInfoService.updateByMenuCode(waitToUpdate);
+                return true;
+            }
+        }.execute();
+    }
+
+    /**
      * 查询record集合
      *
      * @param queryMenuPermissionInfoBo queryMenuPermissionInfoBo
@@ -139,13 +169,40 @@ public class MenuPermissionInfoBizImpl implements MenuPermissionInfoBiz {
     }
 
     /**
+     * 查询record
+     *
+     * @param menuCode menuCode
+     * @return record orElse null
+     */
+    @Override
+    public MenuPermissionInfoBo fetchDetailByCode(String menuCode) {
+        return new BaseBizTemplate<MenuPermissionInfoBo>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(Objects.nonNull(menuCode), "menuCode is null");
+            }
+
+            @Override
+            protected MenuPermissionInfoBo process() {
+                MenuPermissionInfo query = new MenuPermissionInfo();
+                query.setMenuCode(menuCode);
+                List<MenuPermissionInfo> oldMenuPermissionInfoList = menuPermissionInfoService.list(query);
+                if(CollectionUtils.isEmpty(oldMenuPermissionInfoList)){
+                    return null;
+                }
+                return JsonMoreUtils.toBean(JsonMoreUtils.toJson(oldMenuPermissionInfoList.get(0)), MenuPermissionInfoBo.class);
+            }
+        }.execute();
+    }
+
+    /**
      * 根据菜单编码，获取权限code
      *
      * @param menuCodes menuCodes
      * @return permission codes
      */
     @Override
-    public List<String> getPermissionCodeList(List<String> menuCodes) {
+    public List<String> fetchPermissionCodeList(List<String> menuCodes) {
         log.info("getPermissionCodeList biz start, menuCodes : {}", JsonMoreUtils.toJson(menuCodes));
         return new BaseBizTemplate<List<String>>() {
             @Override

@@ -36,11 +36,19 @@ public interface MenuInfoBiz {
     boolean deleteByCode(String menuCode);
 
     /**
+     * 通过菜单编码查询菜单
+     *
+     * @param menuCode menuCode
+     * @return success true orElse false
+     */
+    MenuInfoBo fetchDetailByCode(String menuCode);
+
+    /**
      * 查询record集合
      *
      * @return record list
      */
-    List<MenuInfoBo> getTreeList();
+    List<MenuInfoBo> fetchTreeList();
 
     /**
      * 查询record集合
@@ -48,7 +56,7 @@ public interface MenuInfoBiz {
      * @param userCode userCode
      * @return record list
      */
-    List<MenuInfoBo> getUserTreeList(String userCode);
+    List<MenuInfoBo> fetchUserTreeList(String userCode);
 
     /**
      * 获取用户拥有哪些权限code
@@ -56,6 +64,6 @@ public interface MenuInfoBiz {
      * @param userCode userCode
      * @return user menu code list
      */
-    List<String> getUserHasMenuCodeList(String userCode);
+    List<String> fetchUserHasMenuCodeList(String userCode);
 }
 

@@ -16,4 +16,12 @@ public interface MenuPermissionInfoService extends BaseService<MenuPermissionInf
      * @return 权限信息
      */
     List<MenuPermissionInfo> listByMenuCodes(List<String> menuCodes);
+
+    /**
+     * 通过menuCode修改数据
+     *
+     * @param menuPermissionInfo menuPermissionInfo
+     * @return success true orElse false
+     */
+    Boolean updateByMenuCode(MenuPermissionInfo menuPermissionInfo);
 }

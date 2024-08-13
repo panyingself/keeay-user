@@ -27,7 +27,7 @@ public class MenuInfo implements Serializable {
 	/** 排序字段，越小越靠前 */
 	private Integer sort;
 	/** 菜单类型:  0 - 目录, 1 - 菜单 , 2 - 按钮 */
-	private Boolean type;
+	private Integer type;
 	/** 创建时间 */
 	private LocalDateTime createTime;
 	/** 创建人 */

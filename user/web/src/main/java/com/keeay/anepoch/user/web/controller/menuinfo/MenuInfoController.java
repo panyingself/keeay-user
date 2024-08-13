@@ -24,6 +24,11 @@ public class MenuInfoController {
     @Resource
     private MenuInfoBiz menuInfoBiz;
 
+    @PostMapping("fetchDetailByCode")
+    public MenuInfoDetailResponse fetchDetailByCode(@RequestBody MenuInfoAddRequest addMenuInfoRequest) {
+        MenuInfoBo menuInfoBo = menuInfoBiz.fetchDetailByCode(addMenuInfoRequest.getMenuCode());
+        return JsonMoreUtils.toBean(JsonMoreUtils.toJson(menuInfoBo), MenuInfoDetailResponse.class);
+    }
 
     @PostMapping("add")
     public boolean add(@RequestBody MenuInfoAddRequest addMenuInfoRequest) {
@@ -38,7 +43,7 @@ public class MenuInfoController {
     }
 
     @PostMapping("deleteByCode")
-    public boolean deleteByCode(@RequestBody MenuInfoEditRequest editMenuInfoRequest){
+    public boolean deleteByCode(@RequestBody MenuInfoEditRequest editMenuInfoRequest) {
         return menuInfoBiz.deleteByCode(editMenuInfoRequest.getMenuCode());
     }
 
@@ -47,7 +52,7 @@ public class MenuInfoController {
      */
     @PostMapping("getTreeList")
     public List<MenuInfoListResponse> getTreeList() {
-        List<MenuInfoBo> resultList = menuInfoBiz.getTreeList();
+        List<MenuInfoBo> resultList = menuInfoBiz.fetchTreeList();
         if (CollectionUtils.isEmpty(resultList)) {
             return Lists.newArrayListWithCapacity(0);
         }
@@ -57,7 +62,7 @@ public class MenuInfoController {
     @GetMapping("getUserTreeList")
     public List<MenuInfoListResponse> getUserTreeList() {
         LoginUser loginUser = UserContext.getUser();
-        List<MenuInfoBo> resultList = menuInfoBiz.getUserTreeList(loginUser.getUserCode());
+        List<MenuInfoBo> resultList = menuInfoBiz.fetchUserTreeList(loginUser.getUserCode());
         if (CollectionUtils.isEmpty(resultList)) {
             return Lists.newArrayListWithCapacity(0);
         }

@@ -20,4 +20,12 @@ public interface MenuPermissionInfoMapper extends BaseMapper<MenuPermissionInfo>
      * @return 权限信息
      */
     List<MenuPermissionInfo> getMenuPermissionListByMenuCodes(@Param("menuCodes") List<String> menuCodes);
+
+    /**
+     * 通过menuCode修改数据
+     *
+     * @param menuPermissionInfo menuPermissionInfo
+     * @return success true orElse false
+     */
+    Integer updateByMenuCode(MenuPermissionInfo menuPermissionInfo);
 }

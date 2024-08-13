@@ -1,5 +1,6 @@
 package com.keeay.anepoch.user.biz.menuinfo.bo;
 
+import com.keeay.anepoch.user.biz.permissioninfo.bo.PermissionInfoBo;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -45,7 +46,7 @@ public class MenuInfoBo implements Serializable {
     /**
      * 菜单类型:  0 - 目录, 1 - 菜单 , 2 - 按钮
      */
-    private Boolean type;
+    private Integer type;
     /**
      * 创建时间
      */
@@ -66,6 +67,10 @@ public class MenuInfoBo implements Serializable {
      * children
      */
     private List<MenuInfoBo> children;
+    /**
+     * 权限信息
+     */
+    private List<String> permissionList;
 
     @Override
     public String toString() {
