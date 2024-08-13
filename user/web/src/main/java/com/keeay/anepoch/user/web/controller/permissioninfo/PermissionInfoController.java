@@ -21,7 +21,7 @@ import java.util.Objects;
  * @author pany
  */
 @RestController
-@RequestMapping("api/permission")
+@RequestMapping("api/permission/info")
 public class PermissionInfoController {
     @Resource
     private PermissionInfoBiz permissionInfoBiz;

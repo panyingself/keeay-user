@@ -1,7 +1,6 @@
 
 package com.keeay.anepoch.user.web.controller.organizationinfo;
 
-import com.keeay.anepoch.base.commons.utils.ConditionUtils;
 import com.keeay.anepoch.user.biz.organizationinfo.OrganizationInfoBiz;
 import com.keeay.anepoch.user.biz.organizationinfo.bo.OrganizationInfoBo;
 import com.keeay.anepoch.user.web.controller.organizationinfo.request.*;

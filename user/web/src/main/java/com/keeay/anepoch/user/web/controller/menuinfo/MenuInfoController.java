@@ -19,7 +19,7 @@ import java.util.List;
  * @author pany
  */
 @RestController
-@RequestMapping("api/menu")
+@RequestMapping("api/menu/info")
 public class MenuInfoController {
     @Resource
     private MenuInfoBiz menuInfoBiz;
