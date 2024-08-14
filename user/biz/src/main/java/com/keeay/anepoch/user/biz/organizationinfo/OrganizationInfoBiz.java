@@ -49,5 +49,13 @@ public interface OrganizationInfoBiz {
      * @return data list
      */
     List<OrganizationInfoBo> fetchListByCodes(List<String> organizationCodeList);
+
+    /**
+     * 通过code删除数据
+     *
+     * @param code code
+     * @return success true orElse false
+     */
+    Boolean removeByCode(String code);
 }
 

@@ -12,6 +12,7 @@ import com.keeay.anepoch.base.commons.utils.JsonMoreUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,7 +135,7 @@ public class OrganizationInfoBizImpl implements OrganizationInfoBiz {
             //获取当前节点的子节点
             List<OrganizationInfoBo> children = parentGroupMap.get(currentNode.getCode());
             if (CollectionUtils.isEmpty(children)) {
-                currentNode.setChildren(Lists.newArrayList());
+//                currentNode.setChildren(Lists.newArrayList());
                 continue;
             }
             currentNode.setChildren(children);
@@ -185,6 +186,28 @@ public class OrganizationInfoBizImpl implements OrganizationInfoBiz {
                     return Lists.newArrayListWithCapacity(0);
                 }
                 return JsonMoreUtils.ofList(JsonMoreUtils.toJson(listFromDb), OrganizationInfoBo.class);
+            }
+        }.execute();
+    }
+
+    /**
+     * 通过code删除数据
+     *
+     * @param code code
+     * @return success true orElse false
+     */
+    @Override
+    public Boolean removeByCode(String code) {
+        log.info("removeByCode biz start, code : {}", code);
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(StringUtils.isNotBlank(code), "code is blank");
+            }
+
+            @Override
+            protected Boolean process() {
+                return organizationInfoService.deleteByCode(code);
             }
         }.execute();
     }

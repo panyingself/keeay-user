@@ -16,4 +16,12 @@ public interface OrganizationInfoService extends BaseService<OrganizationInfo, L
      * @return data list
      */
     List<OrganizationInfo> getListByCodes(List<String> organizationCodeList);
+
+    /**
+     * 通过code删除数据
+     *
+     * @param code code
+     * @return success true orElse false
+     */
+    Boolean deleteByCode(String code);
 }

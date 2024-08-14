@@ -3,6 +3,7 @@ package com.keeay.anepoch.user.biz.permissioninfo;
 
 import com.keeay.anepoch.auth.api.context.UserContext;
 import com.keeay.anepoch.base.commons.base.page.CommonPage;
+import com.keeay.anepoch.base.commons.exception.BizException;
 import com.keeay.anepoch.base.commons.lang.Safes;
 import com.keeay.anepoch.base.commons.utils.ConditionUtils;
 import com.keeay.anepoch.user.biz.menuinfo.MenuInfoBiz;
@@ -22,6 +23,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +72,15 @@ public class PermissionInfoBizImpl implements PermissionInfoBiz {
                 //设置权限编码
                 newPermissionInfo.setPermissionCode(PermissionHelper.generatePermissionCode());
                 newPermissionInfo.setCreateUser(UserContext.getUser().getUserName());
-                permissionInfoService.insert(newPermissionInfo);
+                try {
+                    permissionInfoService.insert(newPermissionInfo);
+                }catch (DuplicateKeyException duplicateKeyException){
+                    duplicateKeyException.printStackTrace();
+                    throw new BizException("已有重复code/url");
+                } catch (Exception e){
+                    e.printStackTrace();
+                    throw new BizException("系统异常");
+                }
                 return true;
             }
         }.execute();

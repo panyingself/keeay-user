@@ -112,7 +112,9 @@ CREATE TABLE `manager_center`.`permission_info`  (
   `create_user` varchar(255)  NULL DEFAULT NULL COMMENT '创建人',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `update_user` varchar(255)  NULL DEFAULT NULL COMMENT '更新人',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uniq_idx_permission_code`(`permission_code` ASC) USING BTREE COMMENT '权限编码唯一索引',
+  UNIQUE INDEX `uniq_idx_uri`(`uri` ASC) USING BTREE COMMENT 'uri唯一索引'
 ) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 --创建权限(接口)菜单关联表
@@ -126,5 +128,6 @@ CREATE TABLE `manager_center`.`menu_permission_info`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_user` varchar(255)  NULL DEFAULT NULL COMMENT '修改人',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uniq_idx_menu_code`(`menu_code` ASC) USING BTREE COMMENT 'menuCode唯一索引'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;

@@ -19,4 +19,12 @@ public interface OrganizationInfoMapper extends BaseMapper<OrganizationInfo> {
      * @return data list
      */
     List<OrganizationInfo> getListByCodes(@Param("organizationCodeList") List<String> organizationCodeList);
+
+    /**
+     * 通过code删除数据
+     *
+     * @param code code
+     * @return success true orElse false
+     */
+    Integer deleteByCode(@Param("code") String code);
 }

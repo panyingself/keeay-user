@@ -1,6 +1,7 @@
 
 package com.keeay.anepoch.user.biz.menuinfo;
 
+import com.google.common.base.Strings;
 import com.keeay.anepoch.base.commons.exception.BizException;
 import com.keeay.anepoch.base.commons.lang.Safes;
 import com.keeay.anepoch.base.commons.monitor.BaseBizTemplate;
@@ -67,6 +68,9 @@ public class MenuInfoBizImpl implements MenuInfoBiz {
             protected Boolean process() {
                 //新增角色信息
                 MenuInfo newMenuInfo = MenuInfoBoConverter.convertToMenuInfo(addMenuInfoBo);
+                if (!StringUtils.equalsIgnoreCase(newMenuInfo.getParentMenuCode(), "-1")) {
+                    newMenuInfo.setMenuCode(newMenuInfo.getParentMenuCode() + Strings.padStart(newMenuInfo.getMenuCode(), 2, '0'));
+                }
                 menuInfoService.insert(newMenuInfo);
                 return true;
             }
@@ -198,7 +202,7 @@ public class MenuInfoBizImpl implements MenuInfoBiz {
                     return Lists.newArrayList();
                 }
                 //树化返回
-                List<MenuInfo> sortedList = fromDbList.stream().sorted(Comparator.comparing(MenuInfo::getSort)).collect(Collectors.toList());
+                List<MenuInfo> sortedList = fromDbList.stream().sorted(Comparator.comparing(MenuInfo::getSort,Comparator.nullsLast(Comparator.naturalOrder()))).collect(Collectors.toList());
                 return getTreeList(sortedList);
             }
         }.execute();
