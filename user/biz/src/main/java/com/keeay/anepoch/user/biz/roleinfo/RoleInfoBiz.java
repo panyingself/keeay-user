@@ -3,6 +3,7 @@ package com.keeay.anepoch.user.biz.roleinfo;
 
 import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.user.biz.roleinfo.bo.*;
+import com.keeay.anepoch.user.biz.userinfo.bo.UserInfoBo;
 
 import java.util.List;
 
@@ -47,10 +48,10 @@ public interface RoleInfoBiz {
     /**
      * 查询record detail
      *
-     * @param recordId recordId
+     * @param code code
      * @return record detail
      */
-    RoleInfoBo fetchDetailById(Long recordId);
+    RoleInfoBo fetchDetailByCode(String code);
 
     /**
      * 根据codeList查询list
@@ -59,5 +60,13 @@ public interface RoleInfoBiz {
      * @return list
      */
     List<RoleInfoBo> fetchListByCodeList(List<String> codeList);
+
+    /**
+     * 修改 record active状态
+     *
+     * @param queryRoleInfoBo queryRoleInfoBo
+     * @return success true orElse false
+     */
+    boolean changeEnable(RoleInfoBo queryRoleInfoBo);
 }
 

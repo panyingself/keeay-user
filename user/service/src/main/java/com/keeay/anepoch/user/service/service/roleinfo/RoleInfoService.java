@@ -3,7 +3,6 @@ package com.keeay.anepoch.user.service.service.roleinfo;
 import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.user.service.model.*;
 import com.keeay.anepoch.user.service.model.query.RoleInfoQuery;
-import com.keeay.anepoch.user.service.model.query.UserInfoQuery;
 import com.keeay.anepoch.user.service.service.BaseService;
 
 import java.util.List;
@@ -30,4 +29,12 @@ public interface RoleInfoService extends BaseService<RoleInfo, Long> {
      * @return data list
      */
     List<RoleInfo> getListByCodeList(List<String> codeList);
+
+    /**
+     * 通过角色code修改数据
+     *
+     * @param roleInfo roleInfo
+     * @return success true orElse false
+     */
+    Boolean updateByCode(RoleInfo roleInfo);
 }

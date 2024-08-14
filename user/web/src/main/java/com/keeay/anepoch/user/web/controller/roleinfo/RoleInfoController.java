@@ -9,7 +9,7 @@ import com.keeay.anepoch.user.web.controller.roleinfo.request.*;
 import com.keeay.anepoch.user.web.controller.roleinfo.response.*;
 import com.keeay.anepoch.base.commons.utils.JsonMoreUtils;
 import com.google.common.collect.Lists;
-import com.keeay.anepoch.user.web.controller.userinfo.response.UserInfoListResponse;
+import com.keeay.anepoch.user.web.controller.userinfo.request.UserInfoEditRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,16 +88,28 @@ public class RoleInfoController {
     /**
      * 通过id获取数据详情
      *
-     * @param recordId recordId
+     * @param code code
      * @return 数据详情
      */
-    @GetMapping("fetchDetailById")
-    public RoleInfoDetailResponse fetchDetailById(Long recordId) {
-        RoleInfoBo result = roleInfoBiz.fetchDetailById(recordId);
+    @GetMapping("fetchDetailByCode")
+    public RoleInfoDetailResponse fetchDetailByCode(String code) {
+        RoleInfoBo result = roleInfoBiz.fetchDetailByCode(code);
         if (Objects.isNull(result)) {
             return null;
         }
         return JsonMoreUtils.toBean(JsonMoreUtils.toJson(result), RoleInfoDetailResponse.class);
+    }
+
+    /**
+     * 修改记录
+     *
+     * @param editRoleInfoRequest editRoleInfoRequest
+     * @return success true orElse false
+     */
+    @PostMapping("changeEnable")
+    public boolean changeEnable(@RequestBody RoleInfoEditRequest editRoleInfoRequest) {
+        RoleInfoBo roleInfoBo = JsonMoreUtils.toBean(JsonMoreUtils.toJson(editRoleInfoRequest), RoleInfoBo.class);
+        return roleInfoBiz.changeEnable(roleInfoBo);
     }
 }
 

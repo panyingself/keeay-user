@@ -7,6 +7,7 @@ import com.keeay.anepoch.base.commons.base.page.CommonPage;
 import com.keeay.anepoch.user.service.dao.roleinfo.RoleInfoMapper;
 import com.keeay.anepoch.user.service.model.query.RoleInfoQuery;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import com.keeay.anepoch.user.service.service.BaseServiceImpl;
 import com.keeay.anepoch.user.service.model.*;
@@ -50,5 +51,19 @@ public class RoleInfoServiceImpl extends BaseServiceImpl<RoleInfo, Long> impleme
             return Lists.newArrayListWithCapacity(0);
         }
         return this.roleInfoMapper.getListByCodeList(codeList);
+    }
+
+    /**
+     * 通过角色code修改数据
+     *
+     * @param roleInfo roleInfo
+     * @return success true orElse false
+     */
+    @Override
+    public Boolean updateByCode(RoleInfo roleInfo) {
+        if (StringUtils.isBlank(roleInfo.getRoleCode())) {
+            return false;
+        }
+        return this.roleInfoMapper.updateByCode(roleInfo);
     }
 }

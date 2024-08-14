@@ -22,6 +22,8 @@ public class RoleInfoListResponse {
 
     private String remark;
 
+    private Integer activeStatus;
+
     private String createUser;
 
     private java.util.Date createTime;

@@ -30,4 +30,12 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
      * @return data list
      */
     List<RoleInfo> getListByCodeList(@Param("codeList") List<String> codeList);
+
+    /**
+     * 通过角色code修改数据
+     *
+     * @param roleInfo roleInfo
+     * @return success true orElse false
+     */
+    Boolean updateByCode(RoleInfo roleInfo);
 }

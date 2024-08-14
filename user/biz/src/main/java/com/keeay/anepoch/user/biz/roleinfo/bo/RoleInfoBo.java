@@ -26,6 +26,8 @@ public class RoleInfoBo extends CommonPage implements Serializable {
 	private String roleName;
 	/** 备注 */
 	private String remark;
+	/**激活状态 1 激活 0 未激活*/
+	private Integer activeStatus;
 	/** 创建人 */
 	private String createUser;
 	/** 创建时间 */

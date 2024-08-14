@@ -24,6 +24,8 @@ public class RoleInfoAddRequest {
 
     private String remark;
 
+    private Integer activeStatus;
+
     private String createUser;
 
     private java.util.Date createTime;

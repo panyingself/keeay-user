@@ -6,6 +6,8 @@ import com.keeay.anepoch.base.commons.lang.Safes;
 import com.keeay.anepoch.base.commons.utils.ConditionUtils;
 import com.keeay.anepoch.user.biz.rolemenuinfo.RoleMenuInfoBiz;
 import com.keeay.anepoch.user.biz.rolemenuinfo.bo.RoleMenuInfoBo;
+import com.keeay.anepoch.user.biz.userinfo.bo.UserInfoBo;
+import com.keeay.anepoch.user.biz.userinfo.converter.UserInfoBoConverter;
 import com.keeay.anepoch.user.service.model.*;
 import com.keeay.anepoch.user.biz.roleinfo.bo.*;
 import com.keeay.anepoch.user.service.model.query.RoleInfoQuery;
@@ -16,6 +18,7 @@ import com.keeay.anepoch.base.commons.utils.JsonMoreUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -189,24 +192,28 @@ public class RoleInfoBizImpl implements RoleInfoBiz {
     /**
      * 查询record
      *
-     * @param recordId recordId
+     * @param code code
      * @return record orElse null
      */
     @Override
-    public RoleInfoBo fetchDetailById(Long recordId) {
+    public RoleInfoBo fetchDetailByCode(String code) {
+        log.info("fetchDetailByCode biz start , code : {}", code);
         return new BaseBizTemplate<RoleInfoBo>() {
             @Override
             protected void checkParam() {
-                ConditionUtils.checkArgument(Objects.nonNull(recordId), "recordId is null");
+                ConditionUtils.checkArgument(StringUtils.isNotBlank(code), "code is blank");
             }
 
             @Override
             protected RoleInfoBo process() {
-                RoleInfo fromDb = roleInfoService.getDetailById(recordId);
-                if (Objects.isNull(fromDb)) {
+                List<RoleInfo> fromDbList = roleInfoService.getListByCodeList(Lists.newArrayList(code));
+                if (CollectionUtils.isEmpty(fromDbList)) {
                     return null;
                 }
-                return JsonMoreUtils.toBean(JsonMoreUtils.toJson(fromDb), RoleInfoBo.class);
+                RoleInfoBo result = JsonMoreUtils.toBean(JsonMoreUtils.toJson(fromDbList.get(0)), RoleInfoBo.class);
+                //wrap role menu data
+                wrapRoleMenuData(Lists.newArrayList(result));
+                return result;
             }
         }.execute();
     }
@@ -232,6 +239,34 @@ public class RoleInfoBizImpl implements RoleInfoBiz {
                     return Lists.newArrayListWithCapacity(0);
                 }
                 return JsonMoreUtils.ofList(JsonMoreUtils.toJson(listFromDb), RoleInfoBo.class);
+            }
+        }.execute();
+    }
+
+    /**
+     * 修改 record active状态
+     *
+     * @param roleInfoBo roleInfoBo
+     * @return success true orElse false
+     */
+    @Override
+    public boolean changeEnable(RoleInfoBo roleInfoBo) {
+        log.info("changeEnable biz start, roleInfoBo : {}", roleInfoBo);
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(Objects.nonNull(roleInfoBo), "editUserInfoBo is null");
+                ConditionUtils.checkArgument(Objects.nonNull(roleInfoBo.getRoleCode()), "editUserInfoBo id is null");
+            }
+
+            @Override
+            protected Boolean process() {
+                RoleInfoBo oldDataFromDb = fetchDetailByCode(roleInfoBo.getRoleCode());
+                ConditionUtils.checkArgument(Objects.nonNull(oldDataFromDb), "oldDataFromDb is null");
+                //修改记录
+                RoleInfo waitToUpdate = RoleInfoBoConverter.convertToRoleInfo(roleInfoBo);
+                roleInfoService.updateByCode(waitToUpdate);
+                return true;
             }
         }.execute();
     }
