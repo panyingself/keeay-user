@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
-
 <!-- 不使用namespace的话sql搜索定位会比较方便 -->
 <mapper namespace="com.keeay.anepoch.user.service.dao.roleinfo.RoleInfoMapper">
     <resultMap id="roleInfoResultMap" type="com.keeay.anepoch.user.service.model.RoleInfo">
@@ -218,6 +216,16 @@
     <delete id="delete">
         UPDATE role_info SET delete_flag = 1
         <include refid="listRoleInfoWhere"/>
+    </delete>
+
+    <!--批量删除记录-->
+    <delete id="deleteByRoleCodeList">
+        delete from role_info
+        where
+        role_code in
+        <foreach collection="roleCodeList" item="code" open="(" separator="," close=")">
+            #{code}
+        </foreach>
     </delete>
 
     <!--

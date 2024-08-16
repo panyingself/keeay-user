@@ -61,4 +61,18 @@ public class RoleMenuInfoServiceImpl extends BaseServiceImpl<RoleMenuInfo, Long>
         }
         return roleMenuInfoMapper.getOneByRoleCode(roleCode);
     }
+
+    /**
+     * 通过roleCodeList 删除数据
+     *
+     * @param roleCodeList roleCodeList
+     * @return success true orElse false
+     */
+    @Override
+    public Boolean deleteByRoleCodeList(List<String> roleCodeList) {
+        if (CollectionUtils.isEmpty(roleCodeList)) {
+            return false;
+        }
+        return this.roleMenuInfoMapper.deleteByRoleCodeList(roleCodeList) > 0;
+    }
 }

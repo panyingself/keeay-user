@@ -58,5 +58,13 @@ public interface RoleMenuInfoBiz {
      * @return list
      */
     List<RoleMenuInfoBo> getRoleMenuListByRoleCodes(List<String> roleCodeList);
+
+    /**
+     * 通过角色编码删除数据
+     *
+     * @param roleCodeList roleCodeList
+     * @return success t
+     */
+    Boolean removeByRoleCodeList(List<String> roleCodeList);
 }
 

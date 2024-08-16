@@ -41,9 +41,23 @@ public class MenuPermissionInfoServiceImpl extends BaseServiceImpl<MenuPermissio
      */
     @Override
     public Boolean updateByMenuCode(MenuPermissionInfo menuPermissionInfo) {
-        if(StringUtils.isBlank(menuPermissionInfo.getMenuCode())){
+        if (StringUtils.isBlank(menuPermissionInfo.getMenuCode())) {
             return false;
         }
         return menuPermissionInfoMapper.updateByMenuCode(menuPermissionInfo) > 0;
+    }
+
+    /**
+     * 根据menuCodeList 删除数据
+     *
+     * @param menuCodeList menuCodeList
+     * @return success true orElse false
+     */
+    @Override
+    public Boolean deleteByMenuCodeList(List<String> menuCodeList) {
+        if (CollectionUtils.isEmpty(menuCodeList)) {
+            return false;
+        }
+        return this.menuPermissionInfoMapper.deleteByMenuCodeList(menuCodeList) > 0;
     }
 }

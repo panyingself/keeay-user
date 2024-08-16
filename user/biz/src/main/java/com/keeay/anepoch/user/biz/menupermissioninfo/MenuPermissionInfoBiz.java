@@ -66,5 +66,13 @@ public interface MenuPermissionInfoBiz {
      * @return permission codes
      */
     List<String> fetchPermissionCodeList(List<String> menuCodes);
+
+    /**
+     * 根据menuCodeList 删除数据
+     *
+     * @param menuCodeList menuCodeList
+     * @return success true orElse false
+     */
+    Boolean removeByMenuCodeList(List<String> menuCodeList);
 }
 

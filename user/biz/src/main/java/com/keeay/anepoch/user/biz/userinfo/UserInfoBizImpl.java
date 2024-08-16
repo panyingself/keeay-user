@@ -54,7 +54,7 @@ public class UserInfoBizImpl implements UserInfoBiz {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean add(UserInfoBo addUserInfoBo) {
+    public Boolean add(UserInfoBo addUserInfoBo) {
         return new BaseBizTemplate<Boolean>() {
             @Override
             protected void checkParam() {
@@ -100,7 +100,7 @@ public class UserInfoBizImpl implements UserInfoBiz {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean editById(UserInfoBo editUserInfoBo) {
+    public Boolean editById(UserInfoBo editUserInfoBo) {
         return new BaseBizTemplate<Boolean>() {
             @Override
             protected void checkParam() {
@@ -143,7 +143,7 @@ public class UserInfoBizImpl implements UserInfoBiz {
      * @return success true orElse false
      */
     @Override
-    public boolean changeEnable(UserInfoBo editUserInfoBo) {
+    public Boolean changeEnable(UserInfoBo editUserInfoBo) {
         log.info("changeEnable biz start, editUserInfoBo : {}", editUserInfoBo);
         return new BaseBizTemplate<Boolean>() {
             @Override
@@ -165,13 +165,47 @@ public class UserInfoBizImpl implements UserInfoBiz {
     }
 
     /**
+     * 修改 record active状态
+     *
+     * @param editUserInfoBo editUserInfoBo
+     * @return success true orElse false
+     */
+    @Override
+    public Boolean resetPassword(UserInfoBo editUserInfoBo) {
+        log.info("resetPassword biz start, editUserInfoBo : {}", editUserInfoBo);
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(Objects.nonNull(editUserInfoBo), "editUserInfoBo is null");
+                ConditionUtils.checkArgument(Objects.nonNull(editUserInfoBo.getId()), "editUserInfoBo id is null");
+                ConditionUtils.checkArgument(StringUtils.isNotBlank(editUserInfoBo.getLoginPwd()), "editUserInfoBo loginPwd is null");
+
+            }
+
+            @Override
+            protected Boolean process() {
+                UserInfoBo oldDataFromDb = fetchDetailById(editUserInfoBo.getId());
+                ConditionUtils.checkArgument(Objects.nonNull(oldDataFromDb), "oldDataFromDb is null");
+                //修改记录
+                UserInfo waitToUpdate = UserInfoBoConverter.convertToUserInfo(editUserInfoBo);
+                if (StringUtils.isNotBlank(editUserInfoBo.getLoginPwd())) {
+                    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                    waitToUpdate.setLoginPwd(passwordEncoder.encode(editUserInfoBo.getLoginPwd()));
+                }
+                userInfoService.update(waitToUpdate);
+                return true;
+            }
+        }.execute();
+    }
+
+    /**
      * 新增 record
      *
      * @param userCode userCode
      * @return success true orElse false
      */
     @Override
-    public boolean removeByUserCode(String userCode) {
+    public Boolean removeByUserCode(String userCode) {
         log.info("removeByUserCode biz start, userCode : {}", userCode);
         return new BaseBizTemplate<Boolean>() {
             @Override

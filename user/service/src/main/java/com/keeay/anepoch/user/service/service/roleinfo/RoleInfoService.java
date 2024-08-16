@@ -37,4 +37,12 @@ public interface RoleInfoService extends BaseService<RoleInfo, Long> {
      * @return success true orElse false
      */
     Boolean updateByCode(RoleInfo roleInfo);
+
+    /**
+     * 通过roleCode 删除数据
+     *
+     * @param roleCodeList roleCodeList
+     * @return success true orElse false
+     */
+    Boolean deleteByRoleCodeList(List<String> roleCodeList);
 }

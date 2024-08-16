@@ -68,5 +68,13 @@ public interface RoleInfoBiz {
      * @return success true orElse false
      */
     boolean changeEnable(RoleInfoBo queryRoleInfoBo);
+
+    /**
+     * 根据角色编码删除角色
+     *
+     * @param roleCode roleCode
+     * @return success true orElse false
+     */
+    Boolean removeByCode(String roleCode);
 }
 

@@ -28,4 +28,12 @@ public interface MenuPermissionInfoMapper extends BaseMapper<MenuPermissionInfo>
      * @return success true orElse false
      */
     Integer updateByMenuCode(MenuPermissionInfo menuPermissionInfo);
+
+    /**
+     * 根据menuCodeList 删除数据
+     *
+     * @param menuCodeList menuCodeList
+     * @return success true orElse false
+     */
+    Integer deleteByMenuCodeList(@Param("menuCodeList") List<String> menuCodeList);
 }

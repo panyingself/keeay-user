@@ -18,7 +18,7 @@ public interface UserInfoBiz {
      * @param addUserInfoBo addUserInfoBo
      * @return success true orElse false
      */
-    boolean add(UserInfoBo addUserInfoBo);
+    Boolean add(UserInfoBo addUserInfoBo);
 
     /**
      * 修改 record
@@ -26,7 +26,7 @@ public interface UserInfoBiz {
      * @param editUserInfoBo editUserInfoBo
      * @return success true orElse false
      */
-    boolean editById(UserInfoBo editUserInfoBo);
+    Boolean editById(UserInfoBo editUserInfoBo);
 
     /**
      * 修改 record active状态
@@ -34,7 +34,15 @@ public interface UserInfoBiz {
      * @param editUserInfoBo editUserInfoBo
      * @return success true orElse false
      */
-    boolean changeEnable(UserInfoBo editUserInfoBo);
+    Boolean changeEnable(UserInfoBo editUserInfoBo);
+
+    /**
+     * 修改 record active状态
+     *
+     * @param editUserInfoBo editUserInfoBo
+     * @return success true orElse false
+     */
+    Boolean resetPassword(UserInfoBo editUserInfoBo);
 
     /**
      * 新增 record
@@ -42,7 +50,7 @@ public interface UserInfoBiz {
      * @param userCode userCode
      * @return success true orElse false
      */
-    boolean removeByUserCode(String userCode);
+    Boolean removeByUserCode(String userCode);
 
     /**
      * 查询record集合

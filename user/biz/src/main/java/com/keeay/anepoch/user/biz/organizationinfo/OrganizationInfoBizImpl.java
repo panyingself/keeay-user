@@ -1,6 +1,7 @@
 
 package com.keeay.anepoch.user.biz.organizationinfo;
 
+import com.google.common.base.Strings;
 import com.keeay.anepoch.base.commons.utils.ConditionUtils;
 import com.keeay.anepoch.user.biz.menuinfo.bo.MenuInfoBo;
 import com.keeay.anepoch.user.service.model.*;
@@ -52,6 +53,9 @@ public class OrganizationInfoBizImpl implements OrganizationInfoBiz {
             protected Boolean process() {
                 //新增角色信息
                 OrganizationInfo newOrganizationInfo = OrganizationInfoBoConverter.convertToOrganizationInfo(addOrganizationInfoBo);
+                if (!StringUtils.equalsIgnoreCase(newOrganizationInfo.getParentCode(), ORGANIZATION_TREE_HEAD_NODE_FLAG)) {
+                    newOrganizationInfo.setCode(newOrganizationInfo.getParentCode() + Strings.padStart(newOrganizationInfo.getCode(), 2, '0'));
+                }
                 organizationInfoService.insert(newOrganizationInfo);
                 return true;
             }

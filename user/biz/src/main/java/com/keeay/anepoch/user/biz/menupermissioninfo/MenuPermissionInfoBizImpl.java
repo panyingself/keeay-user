@@ -187,7 +187,7 @@ public class MenuPermissionInfoBizImpl implements MenuPermissionInfoBiz {
                 MenuPermissionInfo query = new MenuPermissionInfo();
                 query.setMenuCode(menuCode);
                 List<MenuPermissionInfo> oldMenuPermissionInfoList = menuPermissionInfoService.list(query);
-                if(CollectionUtils.isEmpty(oldMenuPermissionInfoList)){
+                if (CollectionUtils.isEmpty(oldMenuPermissionInfoList)) {
                     return null;
                 }
                 return JsonMoreUtils.toBean(JsonMoreUtils.toJson(oldMenuPermissionInfoList.get(0)), MenuPermissionInfoBo.class);
@@ -214,6 +214,29 @@ public class MenuPermissionInfoBizImpl implements MenuPermissionInfoBiz {
                         .flatMap(Collection::stream)
                         .filter(StringUtils::isNotBlank)
                         .collect(Collectors.toList());
+            }
+        }.execute();
+    }
+
+    /**
+     * 根据menuCodeList 删除数据
+     *
+     * @param menuCodeList menuCodeList
+     * @return success true orElse false
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean removeByMenuCodeList(List<String> menuCodeList) {
+        log.info("removeByMenuCodeList biz start , menuCodeList : {}", menuCodeList);
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(CollectionUtils.isNotEmpty(menuCodeList), "menuCodeList is empty");
+            }
+
+            @Override
+            protected Boolean process() {
+                return menuPermissionInfoService.deleteByMenuCodeList(menuCodeList);
             }
         }.execute();
     }

@@ -66,12 +66,19 @@ public class MenuInfoBizImpl implements MenuInfoBiz {
 
             @Override
             protected Boolean process() {
-                //新增角色信息
+                //新增菜单信息
                 MenuInfo newMenuInfo = MenuInfoBoConverter.convertToMenuInfo(addMenuInfoBo);
-                if (!StringUtils.equalsIgnoreCase(newMenuInfo.getParentMenuCode(), "-1")) {
+                if (!StringUtils.equalsIgnoreCase(newMenuInfo.getParentMenuCode(), MENU_TREE_HEAD_NODE_FLAG)) {
                     newMenuInfo.setMenuCode(newMenuInfo.getParentMenuCode() + Strings.padStart(newMenuInfo.getMenuCode(), 2, '0'));
                 }
                 menuInfoService.insert(newMenuInfo);
+                if (CollectionUtils.isNotEmpty(addMenuInfoBo.getPermissionList())) {
+                    // 增加菜单权限关联信息
+                    MenuPermissionInfoBo addMenuPermissionInfoBo = new MenuPermissionInfoBo();
+                    addMenuPermissionInfoBo.setMenuCode(newMenuInfo.getMenuCode());
+                    addMenuPermissionInfoBo.setPermissionCodeList(JoinerUtils.JOINER_COMMA.join(addMenuInfoBo.getPermissionList()));
+                    menuPermissionInfoBiz.add(addMenuPermissionInfoBo);
+                }
                 return true;
             }
         }.execute();
@@ -137,7 +144,7 @@ public class MenuInfoBizImpl implements MenuInfoBiz {
      * @return success true orElse false
      */
     @Override
-    public boolean deleteByCode(String menuCode) {
+    public boolean removeByCode(String menuCode) {
         log.info("deleteByCode biz start, menuCode : {}", menuCode);
         return new BaseBizTemplate<Boolean>() {
             @Override
@@ -147,8 +154,11 @@ public class MenuInfoBizImpl implements MenuInfoBiz {
                 query.setParentMenuCode(menuCode);
                 List<MenuInfo> childrenList = menuInfoService.list(query);
                 ConditionUtils.checkArgument(CollectionUtils.isEmpty(childrenList), "还有子菜单.不允许删除");
-                //do delete
-                return menuInfoService.deleteByMenuCode(menuCode);
+                // 删除菜单
+                menuInfoService.deleteByMenuCode(menuCode);
+                // 删除菜单-权限关联信息
+                menuPermissionInfoBiz.removeByMenuCodeList(Lists.newArrayList(menuCode));
+                return true;
             }
         }.execute();
     }
@@ -202,7 +212,7 @@ public class MenuInfoBizImpl implements MenuInfoBiz {
                     return Lists.newArrayList();
                 }
                 //树化返回
-                List<MenuInfo> sortedList = fromDbList.stream().sorted(Comparator.comparing(MenuInfo::getSort,Comparator.nullsLast(Comparator.naturalOrder()))).collect(Collectors.toList());
+                List<MenuInfo> sortedList = fromDbList.stream().sorted(Comparator.comparing(MenuInfo::getSort, Comparator.nullsLast(Comparator.naturalOrder()))).collect(Collectors.toList());
                 return getTreeList(sortedList);
             }
         }.execute();
@@ -247,10 +257,10 @@ public class MenuInfoBizImpl implements MenuInfoBiz {
     }
 
     private List<MenuInfo> getUserMenuList(String userCode) {
-        //根据用户编码查询拥有的角色信息
+        //根据用户编码查询拥有的菜单信息
         List<String> roleCodeList = userRoleInfoBiz.getRoleListByUserCode(userCode);
-        ConditionUtils.checkArgument(CollectionUtils.isNotEmpty(roleCodeList), "用户没有拥有角色信息");
-        //获取角色所拥有的权限菜单信息
+        ConditionUtils.checkArgument(CollectionUtils.isNotEmpty(roleCodeList), "用户没有拥有菜单信息");
+        //获取菜单所拥有的权限菜单信息
         List<String> hasMenuCodeList = roleMenuInfoBiz.getMenuCodeListByRoleCodes(roleCodeList);
         ConditionUtils.checkArgument(CollectionUtils.isNotEmpty(hasMenuCodeList), "用户没有拥有菜单信息");
         //查询拥有的菜单信息

@@ -203,5 +203,27 @@ public class RoleMenuInfoBizImpl implements RoleMenuInfoBiz {
             }
         }.execute();
     }
+
+    /**
+     * 通过角色编码删除数据
+     *
+     * @param roleCodeList roleCodeList
+     * @return success t
+     */
+    @Override
+    public Boolean removeByRoleCodeList(List<String> roleCodeList) {
+        log.info("removeByRoleCodeList biz start , roleCodeList : {}", roleCodeList);
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(CollectionUtils.isNotEmpty(roleCodeList), "roleCodeList is empty");
+            }
+
+            @Override
+            protected Boolean process() {
+                return roleMenuInfoService.deleteByRoleCodeList(roleCodeList);
+            }
+        }.execute();
+    }
 }
 

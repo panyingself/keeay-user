@@ -36,4 +36,12 @@ public interface RoleMenuInfoMapper extends BaseMapper<RoleMenuInfo> {
      * @return record
      */
     RoleMenuInfo getOneByRoleCode(@Param("roleCode") String roleCode);
+
+    /**
+     * 通过roleCodeList 删除数据
+     *
+     * @param roleCodeList roleCodeList
+     * @return success true orElse false
+     */
+    Integer deleteByRoleCodeList(@Param("roleCodeList") List<String> roleCodeList);
 }

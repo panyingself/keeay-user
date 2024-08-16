@@ -38,4 +38,12 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
      * @return success true orElse false
      */
     Boolean updateByCode(RoleInfo roleInfo);
+
+    /**
+     * 通过roleCode 删除数据
+     *
+     * @param roleCodeList roleCodeList
+     * @return success true orElse false
+     */
+    Integer deleteByRoleCodeList(@Param("roleCodeList") List<String> roleCodeList);
 }

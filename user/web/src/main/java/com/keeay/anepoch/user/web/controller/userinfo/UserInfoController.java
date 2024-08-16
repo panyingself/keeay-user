@@ -25,22 +25,6 @@ public class UserInfoController {
     private UserInfoBiz userInfoBiz;
 
     /**
-     * 重置密码
-     *
-     * @param queryUserInfoRequest queryUserInfoRequest
-     * @return list
-     */
-    @PostMapping("resetPassword")
-    public List<UserInfoListResponse> resetPassword(@RequestBody UserInfoQueryRequest queryUserInfoRequest) {
-        UserInfoBo queryUserInfoBo = JsonMoreUtils.toBean(JsonMoreUtils.toJson(queryUserInfoRequest), UserInfoBo.class);
-        List<UserInfoBo> resultList = userInfoBiz.list(queryUserInfoBo);
-        if (CollectionUtils.isEmpty(resultList)) {
-            return Lists.newArrayListWithCapacity(0);
-        }
-        return JsonMoreUtils.ofList(JsonMoreUtils.toJson(resultList), UserInfoListResponse.class);
-    }
-
-    /**
      * 新增记录
      *
      * @param addUserInfoRequest addUserInfoRequest
@@ -74,6 +58,18 @@ public class UserInfoController {
     public boolean changeEnable(@RequestBody UserInfoEditRequest editUserInfoRequest) {
         UserInfoBo editUserInfoBo = JsonMoreUtils.toBean(JsonMoreUtils.toJson(editUserInfoRequest), UserInfoBo.class);
         return userInfoBiz.changeEnable(editUserInfoBo);
+    }
+
+    /**
+     * 重置密码
+     *
+     * @param editUserInfoRequest editUserInfoRequest
+     * @return success true orElse false
+     */
+    @PostMapping("resetPassword")
+    public boolean resetPassword(@RequestBody UserInfoEditRequest editUserInfoRequest) {
+        UserInfoBo editUserInfoBo = JsonMoreUtils.toBean(JsonMoreUtils.toJson(editUserInfoRequest), UserInfoBo.class);
+        return userInfoBiz.resetPassword(editUserInfoBo);
     }
 
     /**

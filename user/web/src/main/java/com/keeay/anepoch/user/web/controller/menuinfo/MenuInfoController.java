@@ -42,9 +42,9 @@ public class MenuInfoController {
         return menuInfoBiz.editById(editMenuInfoBo);
     }
 
-    @PostMapping("deleteByCode")
+    @PostMapping("removeByCode")
     public boolean deleteByCode(@RequestBody MenuInfoEditRequest editMenuInfoRequest) {
-        return menuInfoBiz.deleteByCode(editMenuInfoRequest.getMenuCode());
+        return menuInfoBiz.removeByCode(editMenuInfoRequest.getMenuCode());
     }
 
     /**

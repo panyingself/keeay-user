@@ -32,4 +32,12 @@ public interface RoleMenuInfoService extends BaseService<RoleMenuInfo, Long> {
      * @return record
      */
     RoleMenuInfo getOneByRoleCode(String roleCode);
+
+    /**
+     * 通过roleCodeList 删除数据
+     *
+     * @param roleCodeList roleCodeList
+     * @return success true orElse false
+     */
+    Boolean deleteByRoleCodeList(List<String> roleCodeList);
 }

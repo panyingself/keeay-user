@@ -9,6 +9,7 @@ import com.keeay.anepoch.user.web.controller.roleinfo.request.*;
 import com.keeay.anepoch.user.web.controller.roleinfo.response.*;
 import com.keeay.anepoch.base.commons.utils.JsonMoreUtils;
 import com.google.common.collect.Lists;
+import com.keeay.anepoch.user.web.controller.userinfo.request.UserInfoAddRequest;
 import com.keeay.anepoch.user.web.controller.userinfo.request.UserInfoEditRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -110,6 +111,17 @@ public class RoleInfoController {
     public boolean changeEnable(@RequestBody RoleInfoEditRequest editRoleInfoRequest) {
         RoleInfoBo roleInfoBo = JsonMoreUtils.toBean(JsonMoreUtils.toJson(editRoleInfoRequest), RoleInfoBo.class);
         return roleInfoBiz.changeEnable(roleInfoBo);
+    }
+
+    /**
+     * 删除记录
+     *
+     * @param editRoleInfoRequest editRoleInfoRequest
+     * @return success true orElse false
+     */
+    @PostMapping("removeByCode")
+    public boolean removeByCode(@RequestBody RoleInfoEditRequest editRoleInfoRequest) {
+        return roleInfoBiz.removeByCode(editRoleInfoRequest.getRoleCode());
     }
 }
 

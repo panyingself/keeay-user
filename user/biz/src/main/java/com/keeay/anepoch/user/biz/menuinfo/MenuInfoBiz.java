@@ -33,7 +33,7 @@ public interface MenuInfoBiz {
      * @param menuCode menuCode
      * @return success true orElse false
      */
-    boolean deleteByCode(String menuCode);
+    boolean removeByCode(String menuCode);
 
     /**
      * 通过菜单编码查询菜单

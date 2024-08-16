@@ -24,4 +24,12 @@ public interface MenuPermissionInfoService extends BaseService<MenuPermissionInf
      * @return success true orElse false
      */
     Boolean updateByMenuCode(MenuPermissionInfo menuPermissionInfo);
+
+    /**
+     * 根据menuCodeList 删除数据
+     *
+     * @param menuCodeList menuCodeList
+     * @return success true orElse false
+     */
+    Boolean deleteByMenuCodeList(List<String> menuCodeList);
 }

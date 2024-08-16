@@ -270,5 +270,32 @@ public class RoleInfoBizImpl implements RoleInfoBiz {
             }
         }.execute();
     }
+
+    /**
+     * 根据角色编码删除角色
+     *
+     * @param roleCode roleCode
+     * @return success true orElse false
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean removeByCode(String roleCode) {
+        log.info("removeByCode biz start , roleCode : {}", roleCode);
+        return new BaseBizTemplate<Boolean>() {
+            @Override
+            protected void checkParam() {
+                ConditionUtils.checkArgument(StringUtils.isNotBlank(roleCode), "roleCode is blank");
+            }
+
+            @Override
+            protected Boolean process() {
+                //删除角色信息
+                roleInfoService.deleteByRoleCodeList(Lists.newArrayList(roleCode));
+                //删除角色菜单关联信息
+                roleMenuInfoBiz.removeByRoleCodeList(Lists.newArrayList(roleCode));
+                return true;
+            }
+        }.execute();
+    }
 }
 
